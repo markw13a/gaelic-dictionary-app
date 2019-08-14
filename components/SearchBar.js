@@ -1,7 +1,14 @@
 import React from 'react';
+import {TextInput} from 'react-native';
 
-const SearchBar = () => {};
+import styles from '../res/styles';
 
-export {
-    SearchBar
-};
+const SearchBar = ({searchTerm, setSearchTerm}) => (
+	<TextInput
+		onChangeText={text => setSearchTerm(text)}
+		value={searchTerm} 
+		style={styles.searchBar}
+	/>
+);
+
+export default SearchBar;

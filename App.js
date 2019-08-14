@@ -4,54 +4,40 @@
  */
 
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
 
 import DBConnection from './components/DB';
-// import SearchBar from './components/SearchBar';
-// import SearchResult from './components/SearchResult';
+import SearchBar from './components/SearchBar';
+import SearchResult from './components/SearchResult';
+
+import styles from './res/styles';
 
 const Main = () => {
-  // Store SQLite dictionary db in state
-  // Managed via DBConnection component
-  const [db, setdb] = useState();
+	// Store SQLite dictionary db in state
+	// Managed via DBConnection component
+	const [db, setdb] = useState();
+	const [searchTerm, setSearchTerm] = useState();
+	const [searchResult, setSearchResult] = useState();
 
-  const [results, setResults] = useState();
-  useEffect(() => {
-    if(db) {
-      db.executeSql("SELECT name FROM sqlite_master WHERE type ='table' AND name NOT LIKE 'sqlite_%';", [])
-      .then((res) => console.warn(res));
-    }
-  }, [db]);
+	const [results, setResults] = useState();
+	useEffect(() => {
+		if(db) {
+			db.executeSql("SELECT name FROM sqlite_master WHERE type ='table' AND name NOT LIKE 'sqlite_%';", [])
+			.then((res) => console.warn(res));
+		}
+	}, [db]);
 
-  return (
-    <>
-      {/* <DBConnection db={db} setdb={setdb} /> */}
-      <View style={styles.container}>
-        <Text style={styles.welcome}> Welcome to React Native! </Text>
-        <Text style={styles.instructions}>To get started, edit App.js</Text>
-        <Text> {results + ''} </Text>
-      </View>
-    </>
-  );
+	return (
+		<View style={styles.appContainer}>
+			<DBConnection db={db} setdb={setdb} />
+			<View style={styles.container}>
+				<SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+				<Text style={styles.welcome}> Welcome to React Native! </Text>
+				<Text style={styles.instructions}>To get started, edit App.js</Text>
+				<Text> {results + ''} </Text>
+			</View>
+		</View>
+	);
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
 
 export default Main;
