@@ -4,26 +4,16 @@
  */
 
 import React, {useState, useEffect} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
-import SQLite from 'react-native-sqlite-storage';
+import {StyleSheet, Text, View} from 'react-native';
 
+import DBConnection from './components/DB';
 // import SearchBar from './components/SearchBar';
 // import SearchResult from './components/SearchResult';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
-
 const Main = () => {
+  // Store SQLite dictionary db in state
+  // Managed via DBConnection component
   const [db, setdb] = useState();
-  useEffect(() => {
-    SQLite.enablePromise(true);
-    SQLite.openDatabase({name : 'faclair.db'})
-    .then(res => setdb(res));
-  }, []);
 
   const [results, setResults] = useState();
   useEffect(() => {
@@ -34,12 +24,14 @@ const Main = () => {
   }, [db]);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.welcome}> Welcome to React Native! </Text>
-      <Text style={styles.instructions}>To get started, edit App.js</Text>
-      <Text style={styles.instructions}>{instructions}</Text>
-      <Text> {results + ''} </Text>
-    </View>
+    <>
+      {/* <DBConnection db={db} setdb={setdb} /> */}
+      <View style={styles.container}>
+        <Text style={styles.welcome}> Welcome to React Native! </Text>
+        <Text style={styles.instructions}>To get started, edit App.js</Text>
+        <Text> {results + ''} </Text>
+      </View>
+    </>
   );
 };
 
