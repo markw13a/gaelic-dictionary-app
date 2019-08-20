@@ -24,5 +24,16 @@ export default StyleSheet.create({
 	},
 	scrollView: {
 		width: '100%',
+	},
+
+	buttonGroup: {
+		flexDirection: 'row',
+		width: '100%',
+		justifyContent: 'space-evenly',
+		marginVertical: 20
+	},
+	button: {
+	// 	height: '1rem',
+		width: '30%'
 	}
 });

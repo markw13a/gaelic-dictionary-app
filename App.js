@@ -4,7 +4,7 @@
  */
 
 import React, {useState, useEffect} from 'react';
-import {ScrollView, Text, View} from 'react-native';
+import {Button, ScrollView, Text, View} from 'react-native';
 
 import DBConnection from './components/DB';
 import SearchBar from './components/SearchBar';
@@ -18,7 +18,9 @@ const Main = () => {
 	const [db, setdb] = useState();
 	const [searchTerm, setSearchTerm] = useState();
 	const [results, setResults] = useState();
-	
+	// User can switch between searching the dictionary, viewing previous searches and viewing saved words/phrases
+	const [currentView, setCurrentView] = useState();
+
 	// Retrieve and display results as the user is typing
 	useEffect(() => {
 		if(db) {
@@ -90,6 +92,23 @@ const Main = () => {
 			<DBConnection db={db} setdb={setdb} />
 			<View style={styles.appContainer}>
 				<SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+				<View style={styles.buttonGroup}>
+					<Button 
+						title="Search"
+						style={styles.button}
+						onPress={() => setCurrentView('search')}
+					/>
+					<Button 
+						title="History"
+						style={styles.button}
+						onPress={() => setCurrentView('history')}
+					/>
+					<Button 
+						title="Saved"
+						style={styles.button}
+						onPress={() => setCurrentView('saved')}
+					/>
+				</View>
 				<SearchResults results={results} />
 			</View>
 		</>
