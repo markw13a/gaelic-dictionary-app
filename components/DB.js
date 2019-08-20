@@ -10,7 +10,7 @@ const DBConnection = ({db, setdb}) => {
     useEffect(() => {
         // Initialise databse
         if( !db ) {
-            SQLite.openDatabase({name : 'faclair.db'})
+            SQLite.openDatabase({name : 'test.db', createFromLocation: '~faclair.db'})
             .then(res => setdb(res));
         }
     

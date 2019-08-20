@@ -1,4 +1,9 @@
 {
   "name": "testapp",
-  "displayName": "testapp"
+  "displayName": "testapp",
+  "expo": {
+    "packagerOpts": {
+      "assetExts": ["db"]
+    }
+  }
 }

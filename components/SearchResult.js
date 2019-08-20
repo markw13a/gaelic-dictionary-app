@@ -1,13 +1,19 @@
 import React from 'react';
+import {ScrollView, Text, View} from 'react-native';
 
-const SearchResult = ({data}) => {
-    // Exact structure of data is subject to change depending on what sort of info is available from whichever database we end up borrowing
-     
-};
+import styles from '../res/styles';
 
-const SearchResultsContainer = () => {};
+const Result = ({result}) => (
+    <View style={styles.searchResult}>
+        <Text> {result.gaelic} </Text>
+        <Text> {result.english} </Text>
+    </View>
+);
 
-export {
-    SearchResult,
-    SearchResultsContainer
-};
+const SearchResults = ({results}) => ( 
+    <ScrollView contentContainerStyle={styles.scrollView}>
+        {results && results.map( (result, i) => <Result key={i} result={result} />)}
+    </ScrollView>
+);
+
+export default SearchResults;
