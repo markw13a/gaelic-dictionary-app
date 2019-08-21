@@ -6,7 +6,7 @@ SQLite.enablePromise(true);
 
 // Dummy component that handles entire life-cycle of opening/closing database
 // Code feels a bit funny, maybe give it another look later
-const DBConnection = ({db, setdb}) => {
+const DictionaryDBConnection = ({db, setdb}) => {
     useEffect(() => {
         // Initialise databse
         if( !db ) {
@@ -21,4 +21,43 @@ const DBConnection = ({db, setdb}) => {
     return null;
 };
 
-export default DBConnection;
+const UserDataDBConnection = ({userdb, setUserdb}) => {
+    useEffect(() => {
+        // Initialise databse
+        if( !userdb ) {
+            SQLite.openDatabase({name : 'userdata.db'})
+            .then(res => {
+                // TODO: need to have some way of clearing out search data
+                // Can maybe add a "delete history" button or just clear entries older than a certain age? Deleting oldest entries once a certain limit is reached is also an option
+                res.executeSql(
+                    "CREATE TABLE IF NOT EXISTS History("
+                    + " id INTEGER PRIMARY KEY NOT NULL,"
+                    + " gaelic TEXT NOT NULL,"
+                    + " english TEXT NOT NULL,"
+                    + " date DATE NOT NULL);", 
+                    []
+                );
+                res.executeSql(
+                    "CREATE TABLE IF NOT EXISTS Saved("
+                    + " id INTEGER PRIMARY KEY NOT NULL,"
+                    + " gaelic TEXT NOT NULL,"
+                    + " english TEXT NOT NULL);", 
+                    []
+                );
+                setUserdb(res);
+            });
+        }
+    
+        // Close database connection when component is unmounted
+        return () => userdb.close();
+    }, []);
+    
+    
+
+    return null;
+};
+
+export {
+    DictionaryDBConnection,
+    UserDataDBConnection
+};

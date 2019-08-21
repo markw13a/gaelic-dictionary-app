@@ -6,18 +6,23 @@
 import React, {useState, useEffect} from 'react';
 import {Button, ScrollView, Text, View} from 'react-native';
 
-import DBConnection from './components/DB';
+import {DictionaryDBConnection, UserDataDBConnection} from './components/DB';
 import SearchBar from './components/SearchBar';
 import SearchResults from './components/SearchResult';
 
 import styles from './res/styles';
+import SavedSearchesView from './views/SavedSearchesView';
 
 const Main = () => {
 	// Store SQLite dictionary db in state
 	// Managed via DBConnection component
 	const [db, setdb] = useState();
+	// Used to keep track of search history and saved items
+	const [userdb, setUserdb] = useState();
+
 	const [searchTerm, setSearchTerm] = useState();
 	const [results, setResults] = useState();
+
 	// User can switch between searching the dictionary, viewing previous searches and viewing saved words/phrases
 	const [currentView, setCurrentView] = useState();
 
@@ -78,7 +83,6 @@ const Main = () => {
 				const rows = queryResponse[0].rows;
 				const processedResults = [];
 				// Haven't seen a less silly alternative to processing the results of the query
-
 				for(i=0; i < rows.length; i++) {
 					processedResults.push(rows.item(i));
 				}
@@ -89,7 +93,8 @@ const Main = () => {
 
 	return (
 		<>
-			<DBConnection db={db} setdb={setdb} />
+			<DictionaryDBConnection db={db} setdb={setdb} />
+			<UserDataDBConnection userdb={userdb} setUserdb={setUserdb} />
 			<View style={styles.appContainer}>
 				<SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 				<View style={styles.buttonGroup}>
@@ -98,18 +103,19 @@ const Main = () => {
 						style={styles.button}
 						onPress={() => setCurrentView('search')}
 					/>
-					<Button 
+					{/* <Button 
 						title="History"
 						style={styles.button}
 						onPress={() => setCurrentView('history')}
-					/>
+					/> */}
 					<Button 
 						title="Saved"
 						style={styles.button}
 						onPress={() => setCurrentView('saved')}
 					/>
 				</View>
-				<SearchResults results={results} />
+				{currentView === 'search' && <SearchResults results={results} />}
+				{currentView === 'saved' && <SavedSearchesView userdb={userdb} />}
 			</View>
 		</>
 	);
