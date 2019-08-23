@@ -4,14 +4,21 @@ import SQLite from 'react-native-sqlite-storage';
 // Global DB settings
 SQLite.enablePromise(true);
 
-// Dummy component that handles entire life-cycle of opening/closing database
-// Code feels a bit funny, maybe give it another look later
 const DictionaryDBConnection = ({db, setdb}) => {
     useEffect(() => {
         // Initialise databse
         if( !db ) {
             SQLite.openDatabase({name : 'test.db', createFromLocation: '~faclair.db'})
-            .then(res => setdb(res));
+            .then(res => {
+                // TODO: this is a crude way of ensuring that database has this column
+                // Look in to alternative that doesn't need to be run every time the app is loaded
+                res.executeSql(
+                    "ALTER TABLE faclair ADD COLUMN favourited int DEFAULT 0;", 
+                    []
+                );
+
+                setdb(res);
+            });
         }
     
         // Close database connection when component is unmounted
@@ -35,13 +42,6 @@ const UserDataDBConnection = ({userdb, setUserdb}) => {
                     + " gaelic TEXT NOT NULL,"
                     + " english TEXT NOT NULL,"
                     + " date DATE NOT NULL);", 
-                    []
-                );
-                res.executeSql(
-                    "CREATE TABLE IF NOT EXISTS Saved("
-                    + " id INTEGER PRIMARY KEY NOT NULL,"
-                    + " gaelic TEXT NOT NULL,"
-                    + " english TEXT NOT NULL);", 
                     []
                 );
                 setUserdb(res);
