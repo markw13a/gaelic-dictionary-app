@@ -16,7 +16,24 @@ const DictionaryDBConnection = ({db, setdb}) => {
                     "ALTER TABLE faclair ADD COLUMN favourited int DEFAULT 0;", 
                     []
                 );
-
+                // TODO: need to have some way of clearing out search data
+                // Can maybe add a "delete history" button or just clear entries older than a certain age? Deleting oldest entries once a certain limit is reached is also an option
+                res.executeSql(
+                    "CREATE TABLE IF NOT EXISTS History("
+                    + " id INTEGER PRIMARY KEY NOT NULL,"
+                    + " gaelic TEXT NOT NULL,"
+                    + " english TEXT NOT NULL,"
+                    + " date DATE NOT NULL);", 
+                    []
+                );
+                // Feel that db file used is not very complete. Want the user to be able to add their own words and phrases to the favourites list
+                res.executeSql(
+                    "CREATE TABLE IF NOT EXISTS UserCreatedTerms("
+                    + " id INTEGER PRIMARY KEY NOT NULL,"
+                    + " gaelic TEXT NOT NULL,"
+                    + " english TEXT NOT NULL);", 
+                    []
+                );
                 setdb(res);
             });
         }
@@ -28,36 +45,4 @@ const DictionaryDBConnection = ({db, setdb}) => {
     return null;
 };
 
-const UserDataDBConnection = ({userdb, setUserdb}) => {
-    useEffect(() => {
-        // Initialise databse
-        if( !userdb ) {
-            SQLite.openDatabase({name : 'userdata.db'})
-            .then(res => {
-                // TODO: need to have some way of clearing out search data
-                // Can maybe add a "delete history" button or just clear entries older than a certain age? Deleting oldest entries once a certain limit is reached is also an option
-                res.executeSql(
-                    "CREATE TABLE IF NOT EXISTS History("
-                    + " id INTEGER PRIMARY KEY NOT NULL,"
-                    + " gaelic TEXT NOT NULL,"
-                    + " english TEXT NOT NULL,"
-                    + " date DATE NOT NULL);", 
-                    []
-                );
-                setUserdb(res);
-            });
-        }
-    
-        // Close database connection when component is unmounted
-        return () => userdb.close();
-    }, []);
-    
-    
-
-    return null;
-};
-
-export {
-    DictionaryDBConnection,
-    UserDataDBConnection
-};
+export default DictionaryDBConnection;

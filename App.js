@@ -3,10 +3,10 @@
  * Doing this as both react-native and SQLite are new to me, and react-native seems like it'll be easiest to start with 
  */
 
-import React, {useState, useEffect} from 'react';
-import {Button, ScrollView, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {Button, View} from 'react-native';
 
-import {DictionaryDBConnection, UserDataDBConnection} from './components/DB';
+import DictionaryDBConnection from './components/DB';
 
 import styles from './res/styles';
 import ActiveView from './components/ActiveView';

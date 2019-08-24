@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text} from 'react-native';
+import {Button, Modal, View, Text, TextInput} from 'react-native';
 import SQLite from 'react-native-sqlite-storage';
 
 import SearchResults from './SearchResults';
@@ -93,11 +93,17 @@ const SearchResultsView = ({db}) => {
 };
 
 const SavedSearchesView = ({db}) => {
-	const [savedSearches, setSavedSearches] = useState();
+	const [showAddWordDialog, setShowAddWordDialog] = useState(false);
+	const [favouritedItems, setfavouritedItems] = useState();
+	const [userCreatedItems, setUserCreatedItems] = useState();
+
+	// Really not happy with handling the favourited and user created terms separately, but I'm not sure how else to deal with the fact that different buttons/queries are required for these.
+	// TODO: see if there's a nice way to do away with this
 	useEffect(() => {
 		if(db) {
+			//"SELECT id, gaelic, english FROM faclair WHERE favourited = 1 UNION ALL SELECT id, gaelic, english FROM UserCreatedTerms;"
 			db.executeSql(
-				"SELECT * FROM faclair WHERE favourited = 1;",
+				"SELECT id, gaelic, english, favourited FROM faclair WHERE favourited = 1;",
 			 	[]
 			).then(queryResponse => {
 				const rows = queryResponse[0].rows;
@@ -106,22 +112,72 @@ const SavedSearchesView = ({db}) => {
 				for(i=0; i < rows.length; i++) {
 					processedResults.push(rows.item(i));
 				}
-				setSavedSearches(processedResults); 
+				setfavouritedItems(processedResults); 
+			});
+
+			db.executeSql(
+				"SELECT id, gaelic, english FROM UserCreatedTerms;",
+			 	[]
+			).then(queryResponse => {
+				const rows = queryResponse[0].rows;
+				const processedResults = [];
+
+				for(i=0; i < rows.length; i++) {
+					processedResults.push(rows.item(i));
+				}
+				setUserCreatedItems(processedResults); 
 			});
 		} else {
 			console.warn("db not available when SavedSearchesView instantiated");
 		}
 	}, [db]);
-	
-	if( savedSearches && savedSearches.length === 0 ) {
-		return (
-			<View>
-				<Text> You haven't favourited any words or phrases yet. </Text>
-			</View>
-		);
-	}
 
-	return <SearchResults results={savedSearches} db={db} />
+	return (
+		<>
+			<View>
+				{
+					(favouritedItems && favouritedItems.length === 0) && (userCreatedTerms && userCreatedTerms.length > 0)
+					? <Text>You haven't favourited any words or phrases yet.</Text>
+					: <SearchResults favouritedItems={favouritedItems} db={db} userCreatedItems={userCreatedItems} />
+				}
+			</View>
+			<Modal
+				transparent={false}
+				visible={showAddWordDialog}
+			>
+				<AddNewWordDialog db={db} setShowAddWordDialog={setShowAddWordDialog} />
+			</Modal>
+			<View>
+				<Button 
+					title="Add new word"
+					onPress={() => setShowAddWordDialog(true)}
+				/>
+			</View>
+		</>
+		);
+};
+
+const AddNewWordDialog = ({db, setShowAddWordDialog}) => {
+	const [gaelic, setGaelic] = useState();
+	const [english, setEnglish] = useState();
+
+	return (
+		<View>
+			<View>
+				<TextInput value={gaelic} onChangeText={text => setGaelic(text)} />
+				<TextInput value={english} onChangeText={text => setEnglish(text)} />
+			</View>
+			<View>
+				<Button title="Save" onPress={() => {
+					if(db) {
+						db.executeSql(`INSERT INTO UserCreatedTerms (gaelic, english) VALUES ('${gaelic}', '${english}');`, [])
+						.then(() => setShowAddWordDialog(false));
+					}
+				}} />
+				<Button title="Cancel" onPress={() => setShowAddWordDialog(false)} />
+			</View>
+		</View>
+	);
 };
 
 export default ActiveView;
