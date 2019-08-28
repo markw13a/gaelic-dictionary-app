@@ -87,14 +87,14 @@ const SearchResultsView = ({db}) => {
 	return (
 		<>
 			<SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-			<SearchResults results={results} db={db} />
+			<SearchResults items={results} db={db} />
 		</>
 	);
 };
 
 const SavedSearchesView = ({db}) => {
 	const [showAddWordDialog, setShowAddWordDialog] = useState(false);
-	const [favouritedItems, setfavouritedItems] = useState();
+	const [items, setItems] = useState();
 	const [userCreatedItems, setUserCreatedItems] = useState();
 
 	// Really not happy with handling the favourited and user created terms separately, but I'm not sure how else to deal with the fact that different buttons/queries are required for these.
@@ -112,7 +112,7 @@ const SavedSearchesView = ({db}) => {
 				for(i=0; i < rows.length; i++) {
 					processedResults.push(rows.item(i));
 				}
-				setfavouritedItems(processedResults); 
+				setItems(processedResults); 
 			});
 
 			db.executeSql(
@@ -136,9 +136,9 @@ const SavedSearchesView = ({db}) => {
 		<>
 			<View>
 				{
-					(favouritedItems && favouritedItems.length === 0) && (userCreatedTerms && userCreatedTerms.length > 0)
+					(items && items.length === 0) && (userCreatedTerms && userCreatedTerms.length > 0)
 					? <Text>You haven't favourited any words or phrases yet.</Text>
-					: <SearchResults favouritedItems={favouritedItems} db={db} userCreatedItems={userCreatedItems} />
+					: <SearchResults items={items} db={db} userCreatedItems={userCreatedItems} />
 				}
 			</View>
 			<Modal

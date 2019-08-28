@@ -4,7 +4,7 @@
  */
 
 import React, {useState} from 'react';
-import {Button, View} from 'react-native';
+import {Button, ScrollView, View} from 'react-native';
 
 import DictionaryDBConnection from './components/DB';
 
@@ -25,17 +25,17 @@ const Main = () => {
 			<View style={styles.appContainer}>
 				<ActiveView activeView={activeView} db={db} />
 				<View style={styles.buttonGroup}>
-					<Button 
-						title="Search"
-						style={styles.button}
-						onPress={() => setActiveView('search')}
-					/>
-					<Button 
-						title="Saved"
-						style={styles.button}
-						onPress={() => setActiveView('saved')}
-					/>
-				</View>
+						<Button 
+							title="Search"
+							style={styles.button}
+							onPress={() => setActiveView('search')}
+						/>
+						<Button 
+							title="Saved"
+							style={styles.button}
+							onPress={() => setActiveView('saved')}
+						/>
+					</View>
 			</View>
 		</>
 	);
