@@ -97,11 +97,8 @@ const SavedSearchesView = ({db}) => {
 	const [items, setItems] = useState();
 	const [userCreatedItems, setUserCreatedItems] = useState();
 
-	// Really not happy with handling the favourited and user created terms separately, but I'm not sure how else to deal with the fact that different buttons/queries are required for these.
-	// TODO: see if there's a nice way to do away with this
 	useEffect(() => {
 		if(db) {
-			//"SELECT id, gaelic, english FROM faclair WHERE favourited = 1 UNION ALL SELECT id, gaelic, english FROM UserCreatedTerms;"
 			db.executeSql(
 				"SELECT id, gaelic, english, favourited FROM faclair WHERE favourited = 1;",
 			 	[]
@@ -134,13 +131,11 @@ const SavedSearchesView = ({db}) => {
 
 	return (
 		<>
-			<View>
-				{
-					(items && items.length === 0) && (userCreatedTerms && userCreatedTerms.length > 0)
-					? <Text>You haven't favourited any words or phrases yet.</Text>
-					: <SearchResults items={items} db={db} userCreatedItems={userCreatedItems} />
-				}
-			</View>
+			{
+				(items && items.length === 0) && (userCreatedTerms && userCreatedTerms.length > 0)
+				? <View><Text>You haven't favourited any words or phrases yet.</Text></View>
+				: <SearchResults items={items} db={db} userCreatedItems={userCreatedItems} />
+			}
 			<Modal
 				transparent={false}
 				visible={showAddWordDialog}

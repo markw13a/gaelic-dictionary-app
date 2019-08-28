@@ -29,11 +29,13 @@ const Main = () => {
 							title="Search"
 							style={styles.button}
 							onPress={() => setActiveView('search')}
+							color="#808080"
 						/>
 						<Button 
 							title="Saved"
 							style={styles.button}
 							onPress={() => setActiveView('saved')}
+							color="#808080"
 						/>
 					</View>
 			</View>

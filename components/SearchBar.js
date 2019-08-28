@@ -8,6 +8,7 @@ const SearchBar = ({searchTerm, setSearchTerm}) => (
 		onChangeText={text => setSearchTerm(text)}
 		value={searchTerm} 
 		style={styles.searchBar}
+		placeholder="Search..."
 	/>
 );
 

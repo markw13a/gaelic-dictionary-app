@@ -27,10 +27,12 @@ export default StyleSheet.create({
 	buttonGroup: {
 		flexDirection: 'row',
 		width: '100%',
-		justifyContent: 'space-evenly'
+		justifyContent: 'space-evenly',
+		backgroundColor: '#333333'
 	},
 	button: {
-		width: '30%'
+		width: '30%',
+		backgroundColor: '#808080'
 	},
 	favouriteButtonContainer: {
 		width: '10%'
