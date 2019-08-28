@@ -1,21 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {Button, Modal, View, Text, TextInput} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {TextInput} from 'react-native';
 import SQLite from 'react-native-sqlite-storage';
 
+import styles from '../res/styles';
 import SearchResults from './SearchResults';
-import SearchBar from './SearchBar';
 
-// Basically a switch statement for the different bits of the app
-const ActiveView = ({activeView, db}) => {
-	if( activeView === 'saved' ) {
-		return <SavedSearchesView db={db} />;
-	} else {
-		console.warn("No view found for " + activeView);
-		return <SearchResultsView db={db} />;
-	}
-};
-
-const SearchResultsView = ({db}) => {
+const SearchView = ({db}) => {
 	const [searchTerm, setSearchTerm] = useState();
 	const [results, setResults] = useState();
 
@@ -92,87 +82,13 @@ const SearchResultsView = ({db}) => {
 	);
 };
 
-const SavedSearchesView = ({db}) => {
-	const [showAddWordDialog, setShowAddWordDialog] = useState(false);
-	const [items, setItems] = useState();
-	const [userCreatedItems, setUserCreatedItems] = useState();
+const SearchBar = ({searchTerm, setSearchTerm}) => (
+	<TextInput
+		onChangeText={text => setSearchTerm(text)}
+		value={searchTerm} 
+		style={styles.searchBar}
+		placeholder="Search..."
+	/>
+);
 
-	useEffect(() => {
-		if(db) {
-			db.executeSql(
-				"SELECT id, gaelic, english, favourited FROM faclair WHERE favourited = 1;",
-			 	[]
-			).then(queryResponse => {
-				const rows = queryResponse[0].rows;
-				const processedResults = [];
-
-				for(i=0; i < rows.length; i++) {
-					processedResults.push(rows.item(i));
-				}
-				setItems(processedResults); 
-			});
-
-			db.executeSql(
-				"SELECT id, gaelic, english FROM UserCreatedTerms;",
-			 	[]
-			).then(queryResponse => {
-				const rows = queryResponse[0].rows;
-				const processedResults = [];
-
-				for(i=0; i < rows.length; i++) {
-					processedResults.push(rows.item(i));
-				}
-				setUserCreatedItems(processedResults); 
-			});
-		} else {
-			console.warn("db not available when SavedSearchesView instantiated");
-		}
-	}, [db]);
-
-	return (
-		<>
-			{
-				(items && items.length === 0) && (userCreatedTerms && userCreatedTerms.length > 0)
-				? <View><Text>You haven't favourited any words or phrases yet.</Text></View>
-				: <SearchResults items={items} db={db} userCreatedItems={userCreatedItems} />
-			}
-			<Modal
-				transparent={false}
-				visible={showAddWordDialog}
-			>
-				<AddNewWordDialog db={db} setShowAddWordDialog={setShowAddWordDialog} />
-			</Modal>
-			<View>
-				<Button 
-					title="Add new word"
-					onPress={() => setShowAddWordDialog(true)}
-				/>
-			</View>
-		</>
-		);
-};
-
-const AddNewWordDialog = ({db, setShowAddWordDialog}) => {
-	const [gaelic, setGaelic] = useState();
-	const [english, setEnglish] = useState();
-
-	return (
-		<View>
-			<View>
-				<TextInput value={gaelic} onChangeText={text => setGaelic(text)} />
-				<TextInput value={english} onChangeText={text => setEnglish(text)} />
-			</View>
-			<View>
-				<Button title="Save" onPress={() => {
-					if(db) {
-						db.executeSql(`INSERT INTO UserCreatedTerms (gaelic, english) VALUES ('${gaelic}', '${english}');`, [])
-						.then(() => setShowAddWordDialog(false));
-					}
-				}} />
-				<Button title="Cancel" onPress={() => setShowAddWordDialog(false)} />
-			</View>
-		</View>
-	);
-};
-
-export default ActiveView;
+export default SearchView;

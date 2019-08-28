@@ -9,7 +9,8 @@ import {Button, ScrollView, View} from 'react-native';
 import DictionaryDBConnection from './components/DB';
 
 import styles from './res/styles';
-import ActiveView from './components/ActiveView';
+import SavedView from './components/SavedView';
+import SearchView from './components/SearchView';
 
 const Main = () => {
 	// Store SQLite dictionary db in state
@@ -23,7 +24,11 @@ const Main = () => {
 		<>
 			<DictionaryDBConnection db={db} setdb={setdb} />
 			<View style={styles.appContainer}>
-				<ActiveView activeView={activeView} db={db} />
+				{
+					activeView === 'saved'
+					? <SavedView db={db} />
+					: <SearchView db={db} />
+				}
 				<View style={styles.buttonGroup}>
 						<Button 
 							title="Search"
