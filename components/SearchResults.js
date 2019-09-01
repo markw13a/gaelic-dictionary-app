@@ -4,8 +4,7 @@ import {Alert, Button, Image, ScrollView, Text, TouchableOpacity, View} from 're
 import styles from '../res/styles';
 
 /**
- * @param {boolean} deleteButton if true, favourite button is replaced by a delete button which will attempt to remove the entry from the UserCreatedTerms table. 
- * Initially wanted to have favouritedItems and userCreatedItems just use two separate instances of SearchResults, but combining <ScrollView /> components is non-trivial.
+ * Initially wanted to have items and userCreatedItems just use two separate instances of SearchResults, but combining <ScrollView /> components is non-trivial.
  */ 
 const SearchResults = ({items, userCreatedItems, db}) => ( 
     <ScrollView>
@@ -29,7 +28,7 @@ const SearchResults = ({items, userCreatedItems, db}) => (
 );
 
 /**
- * @param Button will be either a favourite button or a delete button. Need to be different as entries for favourites and user created terms are kept in separate tables
+ * @param Button will be either a favourite button or a delete button. Need to be different as entries for favourites and user created terms are kept in separate tables. Means that queries required to remove them from saved list are different
  */
 const Result = ({result, db, Button}) => (
     <View style={styles.searchResultContainer}>
@@ -54,12 +53,12 @@ const FavouriteButton = ({db, result}) => {
                     "SET favourited = " + (favourited === 0 ? 1 : 0) + 
                     " WHERE id = " + result.id + ";", 
                     []
-                ).then(() => {
+                ).catch(err => Alert.alert('An error has occured ' + JSON.stringify(err)))
+                .then(() => {
                     // Update local copy so that user sees feedback
                     setFavourited(favourited === 0 ? 1 : 0); 
                 });
             }} 
-            style={styles.favouriteButtonContainer}
         >
             {favourited 
                 ? <Image style={styles.favouriteButtonImage} source={require('../res/star-solid.png')} /> 

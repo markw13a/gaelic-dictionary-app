@@ -34,9 +34,6 @@ export default StyleSheet.create({
 		width: '30%',
 		backgroundColor: '#808080'
 	},
-	favouriteButtonContainer: {
-		width: '10%'
-	},
 	// Apparently React-Native needs both dimensions to be specified. Feel like there must be a way to only set one dimension and have the other automatically determined by aspect-ratio.
 	favouriteButtonImage: {
 		height: 30,
