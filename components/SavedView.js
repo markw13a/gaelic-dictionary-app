@@ -47,7 +47,7 @@ const SavedView = ({db}) => {
 	return (
 		<>
 			{
-				(items && items.length === 0) && (userCreatedTerms && userCreatedTerms.length > 0)
+				(items && items.length === 0) && (userCreatedItems && userCreatedItems.length > 0)
 				? <View><Text>You haven't favourited any words or phrases yet.</Text></View>
 				: <SearchResults items={items} db={db} userCreatedItems={userCreatedItems} />
 			}
