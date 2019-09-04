@@ -21,7 +21,6 @@ export default StyleSheet.create({
 		width: '85%'
 	},
 	scrollView: {
-		height: 'auto',
 		width: '100%'
 	},
 	buttonGroup: {
@@ -34,9 +33,13 @@ export default StyleSheet.create({
 		width: '30%',
 		backgroundColor: '#808080'
 	},
+	// Button is sometimes unclickable without this property set
+	favouriteButtonContainer: {
+		flex: 1
+	},
 	// Apparently React-Native needs both dimensions to be specified. Feel like there must be a way to only set one dimension and have the other automatically determined by aspect-ratio.
 	favouriteButtonImage: {
-		height: 30,
-		width: 33.75
+		height: 35,
+		width: 39.375
 	}
 });

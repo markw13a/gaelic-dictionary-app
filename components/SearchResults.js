@@ -33,10 +33,12 @@ const SearchResults = ({items, userCreatedItems, db}) => (
 const Result = ({result, db, Button}) => (
     <View style={styles.searchResultContainer}>
         <View style={styles.searchResultText}>
-            <Text style={{fontSize: 20}}> {result.gaelic} </Text>
-            <Text style={{fontSize: 20}}> {result.english} </Text>
+            <Text style={{fontSize: 22}}> {result.gaelic} </Text>
+            <Text style={{fontSize: 22}}> {result.english} </Text>
         </View>
-        {Button({db, result})}
+        <View>
+            {Button({db, result})}
+        </View>
     </View>
 );
 
@@ -58,7 +60,8 @@ const FavouriteButton = ({db, result}) => {
                     // Update local copy so that user sees feedback
                     setFavourited(favourited === 0 ? 1 : 0); 
                 });
-            }} 
+            }}
+            style={styles.favouriteButtonContainer}
         >
             {favourited 
                 ? <Image style={styles.favouriteButtonImage} source={require('../res/star-solid.png')} /> 
