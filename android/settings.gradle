@@ -1,4 +1,4 @@
-rootProject.name = 'testapp'
+rootProject.name = 'faclairNaGaidhlig'
 
 include ':app'
 

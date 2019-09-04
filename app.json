@@ -1,6 +1,6 @@
 {
-  "name": "testapp",
-  "displayName": "testapp",
+  "name": "faclairNaGaidhlig",
+  "displayName": "Faclair na Gàidhlig",
   "expo": {
     "packagerOpts": {
       "assetExts": ["db"]
