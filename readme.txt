@@ -8,3 +8,5 @@ TODO:
 3) Add "search history"? May or may not do.
 
 4) Investigate possible bug with inability to save words that contain apostrophes
+
+5) Show error message when attempting to save word with one or both fields empty
