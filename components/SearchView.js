@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import {TextInput} from 'react-native';
-import SQLite from 'react-native-sqlite-storage';
+import {TextInput, Text, View} from 'react-native';
 
 import styles from '../res/styles';
 import SearchResults from './SearchResults';
+import AddNewWordDialog from './AddWord';
 
 const SearchView = ({db}) => {
 	const [searchTerm, setSearchTerm] = useState();
@@ -77,7 +77,16 @@ const SearchView = ({db}) => {
 	return (
 		<>
 			<SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-			<SearchResults items={results} db={db} />
+			{
+				results && results.length === 0 && searchTerm
+				? (
+					<View style={{flex:1, alignItems: 'center'}}>
+						<Text> No results. Click below to add this word to your saved searches </Text>
+						<AddNewWordDialog db={db} initialValues={{gaelic: searchTerm}} />
+					</View>
+				)
+				: <SearchResults items={results} db={db} />
+			}
 		</>
 	);
 };
