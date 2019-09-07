@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Modal, View, Text, TextInput} from 'react-native';
+import {Alert, Button, Modal, View, Text, TextInput} from 'react-native';
 import SQLite from 'react-native-sqlite-storage';
 
 import SearchResults from './SearchResults';
@@ -79,6 +79,11 @@ const AddNewWordDialog = ({db, setShowAddWordDialog}) => {
 			</View>
 			<View>
 				<Button title="Save" onPress={() => {
+					if( !gaelic || !english ) {
+						Alert.alert('Fields must not be blank');
+						return;
+					}
+
 					if(db) {
 						db.executeSql(`INSERT INTO UserCreatedTerms (gaelic, english) VALUES ("${gaelic}", "${english}");`, [])
 						.then(() => setShowAddWordDialog(false));
