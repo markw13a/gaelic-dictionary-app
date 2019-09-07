@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {Alert, Button, Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 
 import styles from '../res/styles';
+import AddNewWordDialog from './AddWord';
 
 /**
  * Initially wanted to have items and userCreatedItems just use two separate instances of SearchResults, but combining <ScrollView /> components is non-trivial.
@@ -16,12 +17,13 @@ const SearchResults = ({items, userCreatedItems, db}) => (
                 Button={FavouriteButton} 
             />
         )}
-        {userCreatedItems && userCreatedItems.map((result, i) => 
+        {userCreatedItems && userCreatedItems.map((result, i) =>
+            // Work-arond for button feels a bit ugly. TODO: have another look at this later
             <Result 
                 key={i} 
                 result={result} 
                 db={db} 
-                Button={DeleteButton} 
+                Button={({result, ...props}) => AddNewWordDialog({...props, AddWordButton: EditButton, initialValues: result, edit: true})} 
             />
         )}
     </ScrollView>
@@ -48,7 +50,7 @@ const FavouriteButton = ({db, result}) => {
 
     return (
         <TouchableOpacity
-            onPress={() => {
+            onPress={e => {
                 // Toggle value of favourited
                 db.executeSql(
                     "UPDATE faclair " + 
@@ -60,6 +62,9 @@ const FavouriteButton = ({db, result}) => {
                     // Update local copy so that user sees feedback
                     setFavourited(favourited === 0 ? 1 : 0); 
                 });
+
+                // Prevent parent event from firing (would open edit dialog)
+                e.stopPropagation();
             }}
             style={styles.favouriteButtonContainer}
         >
@@ -71,19 +76,24 @@ const FavouriteButton = ({db, result}) => {
     );
 };
 
-const DeleteButton = ({db, result}) => (
+const EditButton = ({setVisible}) => (
     <TouchableOpacity
-        title="Delete"
-        onPress={() => {
-            db.executeSql(
-                `DELETE FROM UserCreatedTerms WHERE id = ${result.id};`, 
-                []
-            ).catch(err => Alert.alert('An error has occured ' + JSON.stringify(err)))
-            .then(() => Alert.alert('Item deleted'));
-        }} 
+        title="Edit"
+        onPress={() => setVisible(true)}
         style={styles.favouriteButtonContainer}
     >
-        <Image style={styles.favouriteButtonImage} source={require('../res/delete.png')} />
+        <Image style={styles.favouriteButtonImage} source={require('../res/edit.png')} />
+    </TouchableOpacity>
+);
+
+
+const DeleteButton = ({db, result}) => (
+    <TouchableOpacity
+        title="Edit"
+        onPress={() => setVisible(true)}
+        style={styles.favouriteButtonContainer}
+    >
+        <Image style={styles.favouriteButtonImage} source={require('../res/edit.png')} />
     </TouchableOpacity>
 );
 

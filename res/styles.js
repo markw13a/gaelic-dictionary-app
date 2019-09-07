@@ -33,6 +33,18 @@ export default StyleSheet.create({
 		width: '30%',
 		backgroundColor: '#808080'
 	},
+	verticalButtonGroup: {
+		flexDirection: 'column',
+		justifyContent: 'space-evenly'
+	},
+	addWordOptionButton: {
+		flex: 1,
+		marginVertical: "8%"
+	},
+	addWordTextInput: {
+		backgroundColor: '#F5F5F5',
+		marginVertical: 5
+	},
 	// Button is sometimes unclickable without this property set
 	favouriteButtonContainer: {
 		flex: 1
