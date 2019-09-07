@@ -80,7 +80,7 @@ const AddNewWordDialog = ({db, setShowAddWordDialog}) => {
 			<View>
 				<Button title="Save" onPress={() => {
 					if(db) {
-						db.executeSql(`INSERT INTO UserCreatedTerms (gaelic, english) VALUES ('${gaelic}', '${english}');`, [])
+						db.executeSql(`INSERT INTO UserCreatedTerms (gaelic, english) VALUES ("${gaelic}", "${english}");`, [])
 						.then(() => setShowAddWordDialog(false));
 					}
 				}} />
