@@ -14,3 +14,5 @@ TODO:
 6) Fix bug where user searches for a word, doesn't find it, and clicks through the "Add Word" button. Found that word is sometimes "clipped" down to a few characters.
 
 7) Add a "clear field" x to the search-bar.
+
+8) Have the search-field auto-clear after a word has been added.
