@@ -14,7 +14,7 @@ const SavedView = ({db}) => {
 	useEffect(() => {
 		if(db) {
 			db.executeSql(
-				"SELECT id, gaelic, english, favourited FROM faclair WHERE favourited = 1;",
+				"SELECT id, gaelic, english, favourited FROM faclair WHERE favourited = 1 ORDER BY id DESC;",
 			 	[]
 			).then(queryResponse => {
 				const rows = queryResponse[0].rows;
@@ -27,7 +27,7 @@ const SavedView = ({db}) => {
 			});
 
 			db.executeSql(
-				"SELECT id, gaelic, english FROM UserCreatedTerms;",
+				"SELECT id, gaelic, english FROM UserCreatedTerms ORDER BY id DESC;",
 			 	[]
 			).then(queryResponse => {
 				const rows = queryResponse[0].rows;
