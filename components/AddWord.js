@@ -18,7 +18,7 @@ const sqlDeleteWord = ({db, id}) => db.executeSql(`DELETE FROM UserCreatedTerms 
 
 /**
  * 
- * @param {boolean} edit Are we creating a new word or editing an existing one? Need to delete previous entry if it's the latter 
+ * @param {boolean} edit Are we creating a new word or editing an existing one? Need to delete old entry if it's the latter 
  */
 const AddNewWordDialog = ({db, initialValues={}, AddWordButton=AddDefaultWordButton, edit}) => {
 	// If search term is not found, want to provide "Add word" button for user to click
@@ -26,6 +26,15 @@ const AddNewWordDialog = ({db, initialValues={}, AddWordButton=AddDefaultWordBut
 	const [gaelic, setGaelic] = useState(initialValues.gaelic);
 	const [english, setEnglish] = useState(initialValues.english);
 	const [visible, setVisible] =  useState(false);
+
+	const closeDialog = () => {
+		// Hide dialog
+		setVisible(false);
+
+		// Clear text fields
+		setGaelic('');
+		setEnglish('');
+	};
 
 	if(!visible) {
 		return <AddWordButton setVisible={setVisible} />;
@@ -58,10 +67,10 @@ const AddNewWordDialog = ({db, initialValues={}, AddWordButton=AddDefaultWordBut
 									// Would rather have double entries than deleting user's data
 									sqlInsertWord({db, english, gaelic})
 									.then(() => sqlDeleteWord({db, id: initialValues.id}))
-									.then(() => setVisible(false));
+									.then(() => closeDialog());
 								} else {
 									sqlInsertWord({db, english, gaelic})
-									.then(() => setVisible(false));
+									.then(() => closeDialog());
 								}
 							}} 
 						/>
@@ -69,7 +78,7 @@ const AddNewWordDialog = ({db, initialValues={}, AddWordButton=AddDefaultWordBut
 					<View style={styles.addWordOptionButton}>
 						<Button 
 							title="Cancel" 
-							onPress={() => setVisible(false)} 
+							onPress={() => closeDialog()} 
 						/>
 					</View>
 					{edit && (
@@ -78,7 +87,7 @@ const AddNewWordDialog = ({db, initialValues={}, AddWordButton=AddDefaultWordBut
 								title="Delete" 
 								onPress={
 									() => sqlDeleteWord({db, id: initialValues.id})
-										.then(() => setVisible(false))
+										.then(() => closeDialog())
 								} 
 								color='red'
 							/>

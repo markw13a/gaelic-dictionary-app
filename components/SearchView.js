@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {TextInput, Text, View} from 'react-native';
+import {Image, TextInput, Text, TouchableOpacity, View} from 'react-native';
 
 import styles from '../res/styles';
 import SearchResults from './SearchResults';
@@ -92,12 +92,25 @@ const SearchView = ({db}) => {
 };
 
 const SearchBar = ({searchTerm, setSearchTerm}) => (
-	<TextInput
-		onChangeText={text => setSearchTerm(text)}
-		value={searchTerm} 
-		style={styles.searchBar}
-		placeholder="Search..."
-	/>
+	<View style={{...styles.buttonGroup, backgroundColor: '#F3F3F3'}}>
+		<TextInput
+			onChangeText={text => setSearchTerm(text)}
+			value={searchTerm} 
+			style={styles.searchBar}
+			placeholder="Search..."
+		/>
+		<TouchableOpacity
+            onPress={e => {
+				// Clear search bar
+				setSearchTerm('');
+			}}
+			style={{
+				width: '10%'
+			}}
+        >
+			<Image style={{width: '100%', height: undefined, aspectRatio: 1}} source={require('../res/cross.png')} />
+        </TouchableOpacity>
+	</View>
 );
 
 export default SearchView;

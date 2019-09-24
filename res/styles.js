@@ -9,7 +9,7 @@ export default StyleSheet.create({
 	},
 	searchBar: {
 		backgroundColor: '#F3F3F3',
-		width: '100%'
+		width: '80%'
 	},
 	searchResultContainer: {
 		flexDirection: 'row',
