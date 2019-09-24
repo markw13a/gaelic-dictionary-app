@@ -1,4 +1,4 @@
-import React, {useState} from 'react';	
+import React, {useEffect, useState} from 'react';	
 import {Alert, Button, Modal, View, TextInput} from 'react-native';
 
 import styles from '../res/styles';
@@ -26,6 +26,15 @@ const AddNewWordDialog = ({db, initialValues={}, AddWordButton=AddDefaultWordBut
 	const [gaelic, setGaelic] = useState(initialValues.gaelic);
 	const [english, setEnglish] = useState(initialValues.english);
 	const [visible, setVisible] =  useState(false);
+
+	// Special-case handling for use with search-bar
+	// Found that clicking on "Add new word" after unsuccesful search would sometimes give AddNewWordDialog with part of the Gaelic term clipped off
+	// e.g you might search for "somemediumlengthword" and, after clicking "Add new word", the gaelic field would be set to "somemedi" or similar
+	// This happens as initialValues are put in to AddNewWordDialog's state only when the component is first initialised
+	// TODO: feel like this is getting a bit complicated. Maybe look at adjusting component logic to remove need for special-case handling
+	useEffect(() => {
+		setGaelic(initialValues.gaelic);
+	}, [initialValues.gaelic]);
 
 	const closeDialog = () => {
 		// Hide dialog
