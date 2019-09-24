@@ -105,10 +105,11 @@ const SearchBar = ({searchTerm, setSearchTerm}) => (
 				setSearchTerm('');
 			}}
 			style={{
-				width: '10%'
+				width: '10%',
+				justifyContent: 'center'
 			}}
         >
-			<Image style={{width: '100%', height: undefined, aspectRatio: 1}} source={require('../res/cross.png')} />
+			<Image style={{width: '70%', height: undefined, aspectRatio: 1}} source={require('../res/cross.png')} />
         </TouchableOpacity>
 	</View>
 );
