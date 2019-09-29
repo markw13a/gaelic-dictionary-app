@@ -4,13 +4,14 @@
  */
 
 import React, {useState} from 'react';
-import {Button, ScrollView, View} from 'react-native';
+import {Button, View} from 'react-native';
 
 import DictionaryDBConnection from './components/DB';
 
 import styles from './res/styles';
 import SavedView from './components/SavedView';
 import SearchView from './components/SearchView';
+import AddNewWordDialog from './components/AddWord';
 
 const Main = () => {
 	// Store SQLite dictionary db in state
@@ -29,6 +30,7 @@ const Main = () => {
 					? <SavedView db={db} />
 					: <SearchView db={db} />
 				}
+				<AddNewWordDialog />
 				<View style={styles.buttonGroup}>
 						<Button 
 							title="Search"

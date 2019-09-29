@@ -1,53 +1,52 @@
 import React, {useEffect, useState} from 'react';	
-import {Alert, Button, Modal, View, TextInput} from 'react-native';
+import {Alert, Button, Image, Modal, View, TextInput, TouchableOpacity} from 'react-native';
 
 import styles from '../res/styles';
 
-const AddDefaultWordButton = ({setVisible}) => (
+const AddWordButton = ({onPress}) => (
 	<View>
 		<Button 
 			title="Add new word"
-			onPress={() => setVisible(true)}
+			onPress={onPress}
 		/>
 	</View>
 );
 
-const sqlInsertWord = ({db, gaelic, english}) => db.executeSql(`INSERT INTO UserCreatedTerms (gaelic, english) VALUES ("${gaelic}", "${english}");`, []);
+const EditWordButton = ({onPress}) => (
+    <TouchableOpacity
+        title="Edit"
+        onPress={onPress}
+        style={styles.favouriteButtonContainer}
+    >
+        <Image style={styles.favouriteButtonImage} source={require('../res/edit.png')} />
+    </TouchableOpacity>
+);
 
-const sqlDeleteWord = ({db, id}) => db.executeSql(`DELETE FROM UserCreatedTerms WHERE id = ${id};`, []);
+const sqlInsertWord = ({db, gaelic, english}) => db.executeSql(`INSERT INTO faclair (gaelic, english, favourited, user_created) VALUES ("${gaelic}", "${english}", "${new Date().getTime()}", "1");`, []);
+
+const sqlDeleteWord = ({db, rowid}) => db.executeSql(`DELETE FROM faclair WHERE rowid = ${rowid} AND user_created = 1;`, []);
 
 /**
- * 
+ * TODO: Fix misuse of AddNewWordDialog. Is supposed to just be a modal hidden in page, therefore should only be one instance.
+ *  am currently attempting to instantiate multiple with Result. Might need to work with global state so that modal can be shown, hidden by button 
+ * 	presses from different sources across the app
  * @param {boolean} edit Are we creating a new word or editing an existing one? Need to delete old entry if it's the latter 
  */
-const AddNewWordDialog = ({db, initialValues={}, AddWordButton=AddDefaultWordButton, edit}) => {
-	// If search term is not found, want to provide "Add word" button for user to click
-	// Their search-term should already be filled in. Nice time-saver.
-	const [gaelic, setGaelic] = useState(initialValues.gaelic);
-	const [english, setEnglish] = useState(initialValues.english);
-	const [visible, setVisible] =  useState(false);
+const AddNewWordDialog = ({db, initialValues={}, setVisible, visible, edit}) => {
+	const [gaelic, setGaelic] = useState();
+	const [english, setEnglish] = useState();
 
-	// Special-case handling for use with search-bar
-	// Found that clicking on "Add new word" after unsuccesful search would sometimes give AddNewWordDialog with part of the Gaelic term clipped off
-	// e.g you might search for "somemediumlengthword" and, after clicking "Add new word", the gaelic field would be set to "somemedi" or similar
-	// This happens as initialValues are put in to AddNewWordDialog's state only when the component is first initialised
-	// TODO: feel like this is getting a bit complicated. Maybe look at adjusting component logic to remove need for special-case handling
 	useEffect(() => {
-		setGaelic(initialValues.gaelic);
-	}, [initialValues.gaelic]);
-
-	const closeDialog = () => {
-		// Hide dialog
-		setVisible(false);
-
-		// Clear text fields
-		setGaelic('');
-		setEnglish('');
-	};
-
-	if(!visible) {
-		return <AddWordButton setVisible={setVisible} />;
-	}
+		// Pre-fill fields with available data when modal is made visible
+		if(visible) {
+			setGaelic(initialValues.gaelic);
+			setEnglish(initialValues.english);
+		} else {
+		// Clear fields again when modal is hidden
+			setGaelic('');
+			setEnglish('');
+		}
+	}, [visible]);
 
 	return (
 		<Modal
@@ -75,11 +74,11 @@ const AddNewWordDialog = ({db, initialValues={}, AddWordButton=AddDefaultWordBut
 									// Insert new entry before deleting old one
 									// Would rather have double entries than deleting user's data
 									sqlInsertWord({db, english, gaelic})
-									.then(() => sqlDeleteWord({db, id: initialValues.id}))
-									.then(() => closeDialog());
+									.then(() => sqlDeleteWord({db, rowid: initialValues.rowid}))
+									.then(() => setVisible(false));
 								} else {
 									sqlInsertWord({db, english, gaelic})
-									.then(() => closeDialog());
+									.then(() => setVisible(false));
 								}
 							}} 
 						/>
@@ -87,7 +86,7 @@ const AddNewWordDialog = ({db, initialValues={}, AddWordButton=AddDefaultWordBut
 					<View style={styles.addWordOptionButton}>
 						<Button 
 							title="Cancel" 
-							onPress={() => closeDialog()} 
+							onPress={() => setVisible(false)} 
 						/>
 					</View>
 					{edit && (
@@ -95,8 +94,8 @@ const AddNewWordDialog = ({db, initialValues={}, AddWordButton=AddDefaultWordBut
 							<Button 
 								title="Delete" 
 								onPress={
-									() => sqlDeleteWord({db, id: initialValues.id})
-										.then(() => closeDialog())
+									() => sqlDeleteWord({db, rowid: initialValues.rowid})
+										.then(() => setVisible(false))
 								} 
 								color='red'
 							/>
@@ -109,3 +108,9 @@ const AddNewWordDialog = ({db, initialValues={}, AddWordButton=AddDefaultWordBut
 };
 
 export default AddNewWordDialog;
+
+export {
+	AddNewWordDialog,
+	AddWordButton,
+	EditWordButton
+};

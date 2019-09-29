@@ -9,12 +9,11 @@ import SearchResults from './SearchResults';
  */
 const SavedView = ({db}) => {
 	const [items, setItems] = useState();
-	const [userCreatedItems, setUserCreatedItems] = useState();
 
 	useEffect(() => {
 		if(db) {
 			db.executeSql(
-				"SELECT id, gaelic, english, favourited FROM faclair WHERE favourited = 1 ORDER BY id DESC;",
+				"SELECT id, gaelic, english, favourited, rowid, user_created FROM faclair WHERE favourited >= 1 ORDER BY favourited DESC;",
 			 	[]
 			).then(queryResponse => {
 				const rows = queryResponse[0].rows;
@@ -25,19 +24,6 @@ const SavedView = ({db}) => {
 				}
 				setItems(processedResults); 
 			});
-
-			db.executeSql(
-				"SELECT id, gaelic, english FROM UserCreatedTerms ORDER BY id DESC;",
-			 	[]
-			).then(queryResponse => {
-				const rows = queryResponse[0].rows;
-				const processedResults = [];
-
-				for(i=0; i < rows.length; i++) {
-					processedResults.push(rows.item(i));
-				}
-				setUserCreatedItems(processedResults); 
-			});
 		} else {
 			console.warn("db not available when SavedSearchesView instantiated");
 		}
@@ -46,9 +32,9 @@ const SavedView = ({db}) => {
 	return (
 		<>
 			{
-				(items && items.length === 0) && (userCreatedItems && userCreatedItems.length === 0)
+				(items && items.length === 0)
 				? <View style={{flex:1}}><Text>You haven't favourited any words or phrases yet.</Text></View>
-				: <SearchResults items={items} db={db} userCreatedItems={userCreatedItems} />
+				: <SearchResults items={items} db={db} />
 			}
 			<AddNewWordDialog db={db} />
 		</>

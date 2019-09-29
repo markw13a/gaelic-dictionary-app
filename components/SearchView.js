@@ -14,7 +14,7 @@ const SearchView = ({db}) => {
 		if(db) {
 			db.executeSql(
 				"SELECT "+
-				"id,gaelic,english,audio,book,letter,favourited, 1 AS sortby, length(gaelic) "+
+				"gaelic,english,audio,favourited,rowid,user_created, 1 AS sortby, length(gaelic) "+
 			  "FROM faclair "+
 			  "WHERE "+
 				"faclair.gaelic_no_accents LIKE '"+searchTerm+"' "+
@@ -27,7 +27,7 @@ const SearchView = ({db}) => {
 				"OR faclair.english LIKE '"+searchTerm+".' "+
 			"UNION "+
 			  "SELECT "+
-				"id,gaelic,english,audio,book,letter,favourited, 2 AS sortby, length(gaelic) "+
+				"gaelic,english,audio,favourited,rowid,user_created, 2 AS sortby, length(gaelic) "+
 			  "FROM faclair "+
 			  "WHERE "+
 			   "faclair.gaelic_no_accents LIKE '"+searchTerm+" %' "+
@@ -38,25 +38,25 @@ const SearchView = ({db}) => {
 			   "OR  faclair.english LIKE '"+searchTerm+"/%' "+
 			"UNION "+
 			  "SELECT "+
-				"id,gaelic,english,audio,book,letter,favourited, 3 AS sortby, length(gaelic) "+
+				"gaelic,english,audio,favourited,rowid,user_created, 3 AS sortby, length(gaelic) "+
 			  "FROM faclair "+
 			  "WHERE id IN "+
 			  "(SELECT faclair_search.id FROM faclair_search WHERE faclair_search.gaelic MATCH '\""+searchTerm+"\"') "+
 			"UNION "+
 			  "SELECT "+
-				"id,gaelic,english,audio,book,letter,favourited, 3 AS sortby, length(gaelic) "+
+				"gaelic,english,audio,favourited,rowid,user_created, 3 AS sortby, length(gaelic) "+
 			  "FROM faclair "+
 			  "WHERE id IN "+
 			  "(SELECT faclair_search.id FROM faclair_search WHERE faclair_search.english MATCH '\""+searchTerm+"\"') "+
 			"UNION "+
 			  "SELECT "+
-				"id,gaelic,english,audio,book,letter,favourited, 4 AS sortby, length(gaelic) "+
+				"gaelic,english,audio,favourited,rowid,user_created, 4 AS sortby, length(gaelic) "+
 			  "FROM faclair "+
 			  "WHERE id IN "+
 			  "(SELECT faclair_search.id FROM faclair_search WHERE faclair_search.gaelic MATCH '"+searchTerm+"*') "+
 			"UNION "+
 			  "SELECT "+
-				"id,gaelic,english,audio,book,letter,favourited, 4 AS sortby, length(gaelic) "+
+				"gaelic,english,audio,favourited,rowid,user_created, 4 AS sortby, length(gaelic) "+
 			  "FROM faclair "+
 			  "WHERE id IN "+
 			  "(SELECT faclair_search.id FROM faclair_search WHERE faclair_search.english MATCH '"+searchTerm+"*') "+

@@ -1,48 +1,58 @@
 import React, {useEffect} from 'react';
 import SQLite from 'react-native-sqlite-storage';
+import dbUpgrade from '../res/dbUpgrade';
 
 // Global DB settings
 SQLite.enablePromise(true);
 
 const DictionaryDBConnection = ({db, setdb}) => {
     useEffect(() => {
-        // Initialise databse
         if( !db ) {
+            // Initialise databse
             SQLite.openDatabase({name : 'test.db', createFromLocation: '~faclair.db'})
-            .then(res => {
-                // TODO: this is a crude way of ensuring that database has this column
-                // Look in to alternative that doesn't need to be run every time the app is loaded
-                res.executeSql(
-                    "ALTER TABLE faclair ADD COLUMN favourited int DEFAULT 0;", 
-                    []
-                );
-                // TODO: need to have some way of clearing out search data
-                // Can maybe add a "delete history" button or just clear entries older than a certain age? Deleting oldest entries once a certain limit is reached is also an option
-                res.executeSql(
-                    "CREATE TABLE IF NOT EXISTS History("
-                    + " id INTEGER PRIMARY KEY NOT NULL,"
-                    + " gaelic TEXT NOT NULL,"
-                    + " english TEXT NOT NULL,"
-                    + " date DATE NOT NULL);", 
-                    []
-                );
-                // Feel that db file used is not very complete. Want the user to be able to add their own words and phrases to the favourites list
-                res.executeSql(
-                    "CREATE TABLE IF NOT EXISTS UserCreatedTerms("
-                    + " id INTEGER PRIMARY KEY NOT NULL,"
-                    + " gaelic TEXT NOT NULL,"
-                    + " english TEXT NOT NULL);", 
-                    []
-                );
-                setdb(res);
-            });
+            .then(res => setdb(res));
+        } else {
+            // Check for updates to databse schema
+            db.executeSql(
+                "SELECT MAX(version) FROM Version;"
+                , []
+            ).then( res => {
+                const version = Object.values(res[0].rows.item(0))[0];
+
+                // Perform the necessary schema upgrades
+                doUpgradeDb({db, version});
+            }).catch( err => {
+                // User has old database that did not track version number
+                if(err.message && err.message.includes("no such table")) {
+                    doUpgradeDb({db, version: 0});
+                } else {
+                    console.error(err);
+                }
+            }); 
         }
-    
+
         // Close database connection when component is unmounted
-        return () => db.close();
-      }, []);
+        return () => db && db.close();
+      }, [db]);
     
     return null;
+};
+
+/**
+ * @param version current db version. Can be 0
+ */
+const doUpgradeDb = ({db, version}) => {
+    // targetVersion is latest version of db schema
+    if( version == dbUpgrade.targetVersion) return;
+
+    const upgradeVersion = version + 1;
+
+    // Apply version upgrades one at a time (e.g upgrade 1 -> 3 in steps of 1 -> 2 and then 2 -> 3)
+    // Call function recursively if user is multiple updates behind targetVersion
+    db.sqlBatch([
+            ...dbUpgrade.upgradeStatements[`to_v${upgradeVersion}`],
+            `INSERT INTO Version (version) VALUES (${upgradeVersion});`            
+    ]).then(() => doUpgradeDb({db, version: upgradeVersion}));
 };
 
 export default DictionaryDBConnection;
