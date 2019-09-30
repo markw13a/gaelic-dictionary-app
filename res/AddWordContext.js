@@ -25,7 +25,7 @@ const addWordReducer = (state, action) => {
 			return {...state, visible: !state.visible};
 		}
 		case 'setInitialValues': {
-			return {...state, initialValues: action.value};
+			return {...state, initialValues: action.value || {}};
 		}
 		default: {
 			throw new Error(`Unhandled action type: ${action.type}`);
