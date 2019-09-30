@@ -3,7 +3,7 @@ import {Image, TextInput, Text, TouchableOpacity, View} from 'react-native';
 
 import styles from '../res/styles';
 import SearchResults from './SearchResults';
-import AddNewWordDialog from './AddWord';
+import {AddWordButton} from './AddWord';
 
 const SearchView = ({db}) => {
 	const [searchTerm, setSearchTerm] = useState();
@@ -82,7 +82,7 @@ const SearchView = ({db}) => {
 				? (
 					<View style={{flex:1, alignItems: 'center'}}>
 						<Text> No results. Click below to add this word to your saved searches </Text>
-						<AddNewWordDialog db={db} initialValues={{gaelic: searchTerm}} />
+						<AddWordButton initialValues={{gaelic: searchTerm}} />
 					</View>
 				)
 				: <SearchResults items={results} db={db} />
@@ -109,7 +109,7 @@ const SearchBar = ({searchTerm, setSearchTerm}) => (
 				justifyContent: 'center'
 			}}
         >
-			<Image style={{width: '70%', height: undefined, aspectRatio: 1}} source={require('../res/cross.png')} />
+			<Image style={{width: '60%', height: undefined, aspectRatio: 1}} source={require('../res/cross.png')} />
         </TouchableOpacity>
 	</View>
 );

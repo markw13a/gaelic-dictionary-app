@@ -2,47 +2,66 @@ import React, {useEffect, useState} from 'react';
 import {Alert, Button, Image, Modal, View, TextInput, TouchableOpacity} from 'react-native';
 
 import styles from '../res/styles';
+import {useAddWordState, useAddWordDispatch} from '../res/AddWordContext';
 
-const AddWordButton = ({onPress}) => (
-	<View>
-		<Button 
-			title="Add new word"
-			onPress={onPress}
-		/>
-	</View>
-);
 
-const EditWordButton = ({onPress}) => (
-    <TouchableOpacity
-        title="Edit"
-        onPress={onPress}
-        style={styles.favouriteButtonContainer}
-    >
-        <Image style={styles.favouriteButtonImage} source={require('../res/edit.png')} />
-    </TouchableOpacity>
-);
+// Displays the modal and pre-fills fields with any values provided
+// TODO: look at merging/otherwise refactoring with EditWordButton?
+const AddWordButton = ({initialValues}) => {
+	const dispatch = useAddWordDispatch();
+
+	return (
+		<View>
+			<Button 
+				title="Add new word"
+				onPress={() => {
+					// Display modal and pre-fill fields with this word's data
+					dispatch({type: 'toggleVisible'});
+					dispatch({type: 'setInitialValues', value: initialValues});
+				}}
+			/>
+		</View>
+	);
+};
+
+// Displays the modal and pre-fills fields with any values provided
+const EditWordButton = ({initialValues}) => {
+	const dispatch = useAddWordDispatch();
+
+	return (
+		<TouchableOpacity
+			title="Edit"
+			onPress={() => {
+				// Display modal and pre-fill fields with this word's data
+				dispatch({type: 'toggleVisible'});
+				dispatch({type: 'setInitialValues', value: initialValues});
+			}}
+			style={styles.favouriteButtonContainer}
+   		>
+        	<Image style={styles.favouriteButtonImage} source={require('../res/edit.png')} />
+	    </TouchableOpacity>
+	);
+};
 
 const sqlInsertWord = ({db, gaelic, english}) => db.executeSql(`INSERT INTO faclair (gaelic, english, favourited, user_created) VALUES ("${gaelic}", "${english}", "${new Date().getTime()}", "1");`, []);
 
+// TODO: Use something like an upsert instead?
 const sqlDeleteWord = ({db, rowid}) => db.executeSql(`DELETE FROM faclair WHERE rowid = ${rowid} AND user_created = 1;`, []);
 
-/**
- * TODO: Fix misuse of AddNewWordDialog. Is supposed to just be a modal hidden in page, therefore should only be one instance.
- *  am currently attempting to instantiate multiple with Result. Might need to work with global state so that modal can be shown, hidden by button 
- * 	presses from different sources across the app
- * @param {boolean} edit Are we creating a new word or editing an existing one? Need to delete old entry if it's the latter 
- */
-const AddNewWordDialog = ({db, initialValues={}, setVisible, visible, edit}) => {
+const AddNewWordDialog = ({db}) => {
 	const [gaelic, setGaelic] = useState();
 	const [english, setEnglish] = useState();
 
+	const {visible, initialValues} = useAddWordState();
+	const dispatch = useAddWordDispatch();
+	
 	useEffect(() => {
 		// Pre-fill fields with available data when modal is made visible
 		if(visible) {
 			setGaelic(initialValues.gaelic);
 			setEnglish(initialValues.english);
 		} else {
-		// Clear fields again when modal is hidden
+			// Clear fields again when modal is hidden
 			setGaelic('');
 			setEnglish('');
 		}
@@ -70,15 +89,15 @@ const AddNewWordDialog = ({db, initialValues={}, setVisible, visible, edit}) => 
 								
 								if(!db) return;
 
-								if(edit) {
+								if(initialValues['user_created']) {
 									// Insert new entry before deleting old one
 									// Would rather have double entries than deleting user's data
 									sqlInsertWord({db, english, gaelic})
 									.then(() => sqlDeleteWord({db, rowid: initialValues.rowid}))
-									.then(() => setVisible(false));
+									.then(() => dispatch({type: 'toggleVisible'}));
 								} else {
 									sqlInsertWord({db, english, gaelic})
-									.then(() => setVisible(false));
+									.then(() => dispatch({type: 'toggleVisible'}));
 								}
 							}} 
 						/>
@@ -86,16 +105,16 @@ const AddNewWordDialog = ({db, initialValues={}, setVisible, visible, edit}) => 
 					<View style={styles.addWordOptionButton}>
 						<Button 
 							title="Cancel" 
-							onPress={() => setVisible(false)} 
+							onPress={() => dispatch({type: 'toggleVisible'})} 
 						/>
 					</View>
-					{edit && (
+					{initialValues['user_created'] && (
 						<View style={styles.addWordOptionButton}>
 							<Button 
 								title="Delete" 
 								onPress={
 									() => sqlDeleteWord({db, rowid: initialValues.rowid})
-										.then(() => setVisible(false))
+										.then(() => dispatch({type: 'toggleVisible'}))
 								} 
 								color='red'
 							/>

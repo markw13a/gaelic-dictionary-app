@@ -12,6 +12,7 @@ import styles from './res/styles';
 import SavedView from './components/SavedView';
 import SearchView from './components/SearchView';
 import AddNewWordDialog from './components/AddWord';
+import {AddWordProvider} from './res/AddWordContext';
 
 const Main = () => {
 	// Store SQLite dictionary db in state
@@ -25,12 +26,14 @@ const Main = () => {
 		<>
 			<DictionaryDBConnection db={db} setdb={setdb} />
 			<View style={styles.appContainer}>
-				{
-					activeView === 'saved'
-					? <SavedView db={db} />
-					: <SearchView db={db} />
-				}
-				<AddNewWordDialog />
+				<AddWordProvider>
+					{
+						activeView === 'saved'
+						? <SavedView db={db} />
+						: <SearchView db={db} />
+					}
+					<AddNewWordDialog db={db} />
+				</AddWordProvider>
 				<View style={styles.buttonGroup}>
 						<Button 
 							title="Search"

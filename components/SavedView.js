@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text} from 'react-native';
-import AddNewWordDialog from './AddWord';
+import { AddWordButton } from './AddWord';
 
 import SearchResults from './SearchResults';
 
@@ -36,7 +36,7 @@ const SavedView = ({db}) => {
 				? <View style={{flex:1}}><Text>You haven't favourited any words or phrases yet.</Text></View>
 				: <SearchResults items={items} db={db} />
 			}
-			<AddNewWordDialog db={db} />
+			<AddWordButton />
 		</>
 		);
 };
