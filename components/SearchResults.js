@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Alert, Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 
-import styles from '../res/styles';
+import styles, {fontScale} from '../res/styles';
 import {EditWordButton} from './AddWord';
 
 const SearchResults = ({items, db}) => ( 
@@ -19,8 +19,8 @@ const SearchResults = ({items, db}) => (
 const Result = ({result, db}) => (
     <View style={styles.searchResultContainer}>
         <View style={styles.searchResultText}>
-            <Text style={{fontSize: 22}}> {result.gaelic} </Text>
-            <Text style={{fontSize: 22}}> {result.english} </Text>
+            <Text style={fontScale.fontMedium}> {result.gaelic} </Text>
+            <Text style={fontScale.fontMedium}> {result.english} </Text>
         </View>
         <View>
             {result["user_created"]

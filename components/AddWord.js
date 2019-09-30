@@ -11,7 +11,9 @@ const AddWordButton = ({initialValues}) => {
 	const dispatch = useAddWordDispatch();
 
 	return (
-		<View>
+		<View
+			style={styles.addWordOptionButton}
+		>
 			<Button 
 				title="Add new word"
 				onPress={() => {
@@ -74,8 +76,8 @@ const AddNewWordDialog = ({db}) => {
 		>
 			<View>
 				<View>
-					<TextInput style={styles.addWordTextInput} value={gaelic} onChangeText={text => setGaelic(text)} />
-					<TextInput style={styles.addWordTextInput} value={english} onChangeText={text => setEnglish(text)} />
+					<TextInput style={{...styles.textInput}} value={gaelic} onChangeText={text => setGaelic(text)} />
+					<TextInput style={{...styles.textInput}} value={english} onChangeText={text => setEnglish(text)} />
 				</View>
 				<View style={styles.verticalButtonGroup}>
 					<View style={styles.addWordOptionButton}>

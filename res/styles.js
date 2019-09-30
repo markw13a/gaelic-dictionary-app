@@ -1,6 +1,20 @@
 import {StyleSheet} from 'react-native';
 
-export default StyleSheet.create({
+const baseFont = 18;
+const fontScale = StyleSheet.create({
+	fontSmall: {
+		fontSize: baseFont
+	},
+	fontMedium: {
+		fontSize: baseFont * 1.333
+	},
+	fontLarge: {
+		fontSize: baseFont * 1.777
+	}
+});
+
+// TODO: break this up in to smaller, more easily searchable, stylesheets
+const styles = StyleSheet.create({
 	appContainer: {
 		flex: 1,
 		flexDirection: 'column',
@@ -8,7 +22,6 @@ export default StyleSheet.create({
 		height: '100%'
 	},
 	searchBar: {
-		backgroundColor: '#F3F3F3',
 		width: '80%'
 	},
 	searchResultContainer: {
@@ -31,19 +44,23 @@ export default StyleSheet.create({
 	},
 	button: {
 		width: '30%',
-		backgroundColor: '#808080'
+		minHeight: fontScale.fontMedium.fontSize * 2,
+		backgroundColor: '#808080',
+		alignItems: "center",
+		justifyContent: "center"
 	},
 	verticalButtonGroup: {
 		flexDirection: 'column',
-		justifyContent: 'space-evenly'
+		justifyContent: 'space-evenly',
+		alignItems: 'center'
 	},
 	addWordOptionButton: {
-		flex: 1,
-		marginVertical: "8%"
+		marginVertical: "4%",
+		width: '60%'
 	},
-	addWordTextInput: {
-		backgroundColor: '#F5F5F5',
-		marginVertical: 5
+	textInput: {
+		backgroundColor: '#F3F3F3',
+		...fontScale.fontLarge
 	},
 	// Button is sometimes unclickable without this property set
 	favouriteButtonContainer: {
@@ -55,3 +72,9 @@ export default StyleSheet.create({
 		width: 39.375
 	}
 });
+
+export default styles;
+export {
+	styles,
+	fontScale
+}

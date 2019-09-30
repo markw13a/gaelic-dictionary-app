@@ -96,7 +96,7 @@ const SearchBar = ({searchTerm, setSearchTerm}) => (
 		<TextInput
 			onChangeText={text => setSearchTerm(text)}
 			value={searchTerm} 
-			style={styles.searchBar}
+			style={{...styles.searchBar, ...styles.textInput}}
 			placeholder="Search..."
 		/>
 		<TouchableOpacity
