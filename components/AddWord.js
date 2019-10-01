@@ -11,17 +11,17 @@ const AddWordButton = ({initialValues}) => {
 	const dispatch = useAddWordDispatch();
 
 	return (
-		<View
-			style={styles.addWordOptionButton}
-		>
-			<Button 
-				title="Add new word"
-				onPress={() => {
-					// Display modal and pre-fill fields with this word's data
-					dispatch({type: 'toggleVisible'});
-					dispatch({type: 'setInitialValues', value: initialValues});
-				}}
-			/>
+		<View style={styles.verticalButtonGroup}>
+			<View style={styles.addWordOptionButton}>
+				<Button 
+					title="Add new word"
+					onPress={() => {
+						// Display modal and pre-fill fields with this word's data
+						dispatch({type: 'toggleVisible'});
+						dispatch({type: 'setInitialValues', value: initialValues});
+					}}
+				/>
+			</View>
 		</View>
 	);
 };
@@ -76,8 +76,8 @@ const AddNewWordDialog = ({db}) => {
 		>
 			<View>
 				<View>
-					<TextInput style={{...styles.textInput}} value={gaelic} onChangeText={text => setGaelic(text)} />
-					<TextInput style={{...styles.textInput}} value={english} onChangeText={text => setEnglish(text)} />
+					<TextInput style={{...styles.textInput}} value={gaelic} onChangeText={text => setGaelic(text)} placeholder="Gaelic" />
+					<TextInput style={{...styles.textInput}} value={english} onChangeText={text => setEnglish(text)} placeholder="English" />
 				</View>
 				<View style={styles.verticalButtonGroup}>
 					<View style={styles.addWordOptionButton}>

@@ -98,6 +98,7 @@ const SearchBar = ({searchTerm, setSearchTerm}) => (
 			value={searchTerm} 
 			style={{...styles.searchBar, ...styles.textInput}}
 			placeholder="Search..."
+			textAlignVertical='center'
 		/>
 		<TouchableOpacity
             onPress={e => {

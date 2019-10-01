@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
 	},
 	textInput: {
 		backgroundColor: '#F3F3F3',
+		marginBottom: '4%',
 		...fontScale.fontLarge
 	},
 	// Button is sometimes unclickable without this property set
