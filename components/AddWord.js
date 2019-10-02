@@ -45,10 +45,13 @@ const EditWordButton = ({initialValues}) => {
 	);
 };
 
-const sqlInsertWord = ({db, gaelic, english}) => db.executeSql(`INSERT INTO faclair (gaelic, english, favourited, user_created) VALUES ("${gaelic}", "${english}", "${new Date().getTime()}", "1");`, []);
+const sqlInsertWord = ({db, gaelic, gaelic_no_accents, english}) => db.executeSql(`INSERT INTO faclair (gaelic, gaelic_no_accents, english, favourited, user_created) VALUES ("${gaelic}", "${gaelic_no_accents}", "${english}", "${new Date().getTime()}", "1");`, []);
 
 // TODO: Use something like an upsert instead?
 const sqlDeleteWord = ({db, rowid}) => db.executeSql(`DELETE FROM faclair WHERE rowid = ${rowid} AND user_created = 1;`, []);
+
+// Used to transform accent characters in to Latin equivalents
+const characterConversionTable = {'á': 'a', 'Á': 'A', 'é': 'e', 'É': 'E', 'í': 'i', 'Í': 'I', 'ó':'o', 'Ó': 'O', 'ú': 'u', 'Ú': 'U'}
 
 const AddNewWordDialog = ({db}) => {
 	const [gaelic, setGaelic] = useState();
@@ -91,14 +94,17 @@ const AddNewWordDialog = ({db}) => {
 								
 								if(!db) return;
 
+								// Used later to allow the user to look up word without typing out correct accents
+								const gaelic_no_accents = gaelic.replace(/[áÁéÉíÍóÓúÚ]/gi, (match) => characterConversionTable[match]);
+
 								if(initialValues['user_created']) {
 									// Insert new entry before deleting old one
 									// Would rather have double entries than deleting user's data
-									sqlInsertWord({db, english, gaelic})
+									sqlInsertWord({db, english, gaelic, gaelic_no_accents})
 									.then(() => sqlDeleteWord({db, rowid: initialValues.rowid}))
 									.then(() => dispatch({type: 'toggleVisible'}));
 								} else {
-									sqlInsertWord({db, english, gaelic})
+									sqlInsertWord({db, english, gaelic, gaelic_no_accents})
 									.then(() => dispatch({type: 'toggleVisible'}));
 								}
 							}} 

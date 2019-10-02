@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {Image, TextInput, Text, TouchableOpacity, View} from 'react-native';
 
-import styles from '../res/styles';
+import styles, {fontScale} from '../res/styles';
 import SearchResults from './SearchResults';
 import {AddWordButton} from './AddWord';
 
@@ -12,6 +12,8 @@ const SearchView = ({db}) => {
 	// Retrieve and display results as the user is typing
 	useEffect(() => {
 		if(db) {
+			// TODO: this query is very broad, and will always match SOMETHING
+			// Feel that, while this could appear a bit strange, it is not a problem. Maybe revisit after I've spent some time using this version
 			db.executeSql(
 				"SELECT "+
 					"gaelic,english,audio,favourited,rowid,user_created, 1 AS sortby, length(gaelic) "+
@@ -40,7 +42,7 @@ const SearchView = ({db}) => {
 				results && results.length === 0 && searchTerm
 				? (
 					<View style={{flex:1, alignItems: 'center'}}>
-						<Text> No results. Click below to add this word to your saved searches </Text>
+						<Text style={{...fontScale.fontSmall}} > No results. Click below to add this word to your saved searches </Text>
 						<AddWordButton initialValues={{gaelic: searchTerm}} />
 					</View>
 				)
