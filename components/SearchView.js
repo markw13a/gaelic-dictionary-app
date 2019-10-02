@@ -14,53 +14,12 @@ const SearchView = ({db}) => {
 		if(db) {
 			db.executeSql(
 				"SELECT "+
-				"gaelic,english,audio,favourited,rowid,user_created, 1 AS sortby, length(gaelic) "+
-			  "FROM faclair "+
-			  "WHERE "+
-				"faclair.gaelic_no_accents LIKE '"+searchTerm+"' "+
-				"OR  faclair.english LIKE '"+searchTerm+"' "+
-				"OR faclair.gaelic_no_accents LIKE '"+searchTerm+".' "+
-				"OR faclair.gaelic_no_accents LIKE '"+searchTerm+"!' "+
-				"OR faclair.gaelic_no_accents LIKE '"+searchTerm+"?' "+
-				"OR faclair.english LIKE '"+searchTerm+"?' "+
-				"OR faclair.english LIKE '"+searchTerm+"!' "+
-				"OR faclair.english LIKE '"+searchTerm+".' "+
-			"UNION "+
-			  "SELECT "+
-				"gaelic,english,audio,favourited,rowid,user_created, 2 AS sortby, length(gaelic) "+
-			  "FROM faclair "+
-			  "WHERE "+
-			   "faclair.gaelic_no_accents LIKE '"+searchTerm+" %' "+
-			   "OR  faclair.english LIKE '"+searchTerm+" %' "+
-			   "OR  faclair.gaelic LIKE '"+searchTerm+",%' "+
-			   "OR  faclair.english LIKE '"+searchTerm+",%' "+
-			   "OR  faclair.gaelic LIKE '"+searchTerm+"/%' "+
-			   "OR  faclair.english LIKE '"+searchTerm+"/%' "+
-			"UNION "+
-			  "SELECT "+
-				"gaelic,english,audio,favourited,rowid,user_created, 3 AS sortby, length(gaelic) "+
-			  "FROM faclair "+
-			  "WHERE id IN "+
-			  "(SELECT faclair_search.id FROM faclair_search WHERE faclair_search.gaelic MATCH '\""+searchTerm+"\"') "+
-			"UNION "+
-			  "SELECT "+
-				"gaelic,english,audio,favourited,rowid,user_created, 3 AS sortby, length(gaelic) "+
-			  "FROM faclair "+
-			  "WHERE id IN "+
-			  "(SELECT faclair_search.id FROM faclair_search WHERE faclair_search.english MATCH '\""+searchTerm+"\"') "+
-			"UNION "+
-			  "SELECT "+
-				"gaelic,english,audio,favourited,rowid,user_created, 4 AS sortby, length(gaelic) "+
-			  "FROM faclair "+
-			  "WHERE id IN "+
-			  "(SELECT faclair_search.id FROM faclair_search WHERE faclair_search.gaelic MATCH '"+searchTerm+"*') "+
-			"UNION "+
-			  "SELECT "+
-				"gaelic,english,audio,favourited,rowid,user_created, 4 AS sortby, length(gaelic) "+
-			  "FROM faclair "+
-			  "WHERE id IN "+
-			  "(SELECT faclair_search.id FROM faclair_search WHERE faclair_search.english MATCH '"+searchTerm+"*') "+
-			"ORDER BY sortby ASC, length(gaelic) ASC LIMIT 25;",
+					"gaelic,english,audio,favourited,rowid,user_created, 1 AS sortby, length(gaelic) "+
+				"FROM faclair "+
+				"WHERE "+
+					"faclair.gaelic LIKE '%"+searchTerm+"%' "+
+					"OR faclair.gaelic_no_accents LIKE '%"+searchTerm+"%' "+
+					"OR faclair.english LIKE '%"+searchTerm+"%';",
 			[])
 			.then(queryResponse => {
 				const rows = queryResponse[0].rows;
@@ -98,7 +57,6 @@ const SearchBar = ({searchTerm, setSearchTerm}) => (
 			value={searchTerm} 
 			style={{...styles.searchBar, ...styles.textInput}}
 			placeholder="Search..."
-			textAlignVertical='center'
 		/>
 		<TouchableOpacity
             onPress={e => {
