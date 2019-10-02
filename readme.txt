@@ -5,8 +5,6 @@ TODO:
 
 2) Seek out more complete primary dictionary database
 
-3) Look in to main search query not being able to find user created terms when Gaelic is used. Probably something to do with table structure of original data.
+3) Have saved items list refresh after user adds or deletes a term
 
-4) Have saved items list refresh after user adds or deletes a term
-
-5) Rework UI
+4) Rework UI
