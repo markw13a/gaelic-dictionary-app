@@ -1,14 +1,12 @@
-(Last updated 24/09/2019)
+(Last updated 02/10/2019)
 
 TODO:
 1) Add ability to change between views by swiping left or right 
 
-2) Add "search history"? May or may not do.
+2) Seek out more complete primary dictionary database
 
-3) Integrate Gaelic definitions dictionary
+3) Look in to main search query not being able to find user created terms when Gaelic is used. Probably something to do with table structure of original data.
 
-4) Seek out more complete primary dictionary database
+4) Have saved items list refresh after user adds or deletes a term
 
-5) Finish work on changes to DB. Favourited now records timestamp representing when item was favourited. Need to alter search results to give union of actual DB results and results from user created items table.
-
-May now be problems with distinguishing between db results and user created results.
+5) Rework UI
