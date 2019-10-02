@@ -1,39 +1,35 @@
 import React, {useState} from 'react';
-import {Alert, Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
 
 import styles, {fontScale} from '../res/styles';
 import {EditWordButton} from './AddWord';
 
-const SearchResults = ({items, db}) => ( 
-    <ScrollView>
-        {items && items.map( (result, i) => 
-            <Result 
-                key={JSON.stringify(result)} 
-                result={result} 
-                db={db} 
-            />
-        )}
-    </ScrollView>
+const SearchResults = ({items, db}) => (
+    <FlatList 
+        data={items}
+        keyExtractor={(item) => JSON.stringify(item)}
+        renderItem={({item}) => <Result item={item} db={db} />}
+    />
 );
 
-const Result = ({result, db}) => (
+const Result = ({item, db}) => (
     <View style={styles.searchResultContainer}>
         <View style={styles.searchResultText}>
-            <Text style={fontScale.fontMedium}> {result.gaelic} </Text>
-            <Text style={fontScale.fontMedium}> {result.english} </Text>
+            <Text style={fontScale.fontMedium}> {item.gaelic} </Text>
+            <Text style={fontScale.fontMedium}> {item.english} </Text>
         </View>
         <View>
-            {result["user_created"]
-                ? EditWordButton({initialValues:result})
-                : FavouriteButton({db, result})
+            {item["user_created"]
+                ? EditWordButton({initialValues:item})
+                : FavouriteButton({db, item})
             }
         </View>
     </View>
 );
 
-const FavouriteButton = ({db, result}) => {
+const FavouriteButton = ({db, item}) => {
     // Use state to immediately show effects of favourite/unfavourite without having to refresh data from database
-    const [favourited, setFavourited] = useState(result.favourited);
+    const [favourited, setFavourited] = useState(item.favourited);
 
     return (
         <TouchableOpacity
@@ -42,7 +38,7 @@ const FavouriteButton = ({db, result}) => {
                 db.executeSql(
                     "UPDATE faclair " + 
                     "SET favourited = " + (favourited === 0 ? new Date().getTime() : 0) + 
-                    " WHERE rowid = " + result.rowid + ";", 
+                    " WHERE rowid = " + item.rowid + ";", 
                     []
                 ).catch(err => console.error('An error has occured ' + JSON.stringify(err)))
                 .then(() => {
