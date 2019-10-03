@@ -15,8 +15,8 @@ const SearchResults = ({items, db}) => (
 const Result = ({item, db}) => (
     <View style={styles.searchResultContainer}>
         <View style={styles.searchResultText}>
-            <Text style={fontScale.fontMedium}> {item.gaelic} </Text>
-            <Text style={fontScale.fontMedium}> {item.english} </Text>
+            <Text style={{...fontScale.fontMedium, color: '#000000'}}> {item.gaelic} </Text>
+            <Text style={{...fontScale.fontMedium, color: '#000000'}}> {item.english} </Text>
         </View>
         <View>
             {item["user_created"]

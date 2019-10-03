@@ -1,5 +1,14 @@
 import {StyleSheet} from 'react-native';
 
+const colours = {
+	background: '#f3f3f3',
+	text: '#000000',
+	// Use different colours for buttons that control current view vs buttons that switch views
+	// Helps to emphasise that these are fundamentally different
+	interactables: '#2685AD',
+	hotBarButtons: '#20BA96'
+};
+
 const baseFont = 18;
 const fontScale = StyleSheet.create({
 	fontSmall: {
@@ -19,10 +28,12 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: 'column',
 		width: '100%',
-		height: '100%'
+		height: '100%',
+		backgroundColor: colours.background
 	},
 	searchBar: {
-		width: '80%'
+		// width: '90%',
+		backgroundColor: '#ffffff'
 	},
 	searchResultContainer: {
 		flexDirection: 'row',
@@ -31,7 +42,8 @@ const styles = StyleSheet.create({
 	},
 	searchResultText: {
 		flexDirection: 'column',
-		width: '85%'
+		width: '85%',
+		color: colours.text
 	},
 	scrollView: {
 		width: '100%'
@@ -39,8 +51,7 @@ const styles = StyleSheet.create({
 	buttonGroup: {
 		flexDirection: 'row',
 		width: '100%',
-		justifyContent: 'space-evenly',
-		backgroundColor: '#333333'
+		justifyContent: 'space-evenly'
 	},
 	button: {
 		width: '30%',
@@ -59,23 +70,30 @@ const styles = StyleSheet.create({
 		width: '60%'
 	},
 	textInput: {
-		backgroundColor: '#F3F3F3',
-		marginBottom: '4%',
-		...fontScale.fontLarge
+		// marginVertical: '2%',
+		...fontScale.fontLarge,
+		color: colours.text
 	},
 	// Button is sometimes unclickable without this property set
 	favouriteButtonContainer: {
-		flex: 1
+		height: 50,
+		width: 50,
+		borderRadius: 25,
+		
+		alignItems: 'center',
+		justifyContent: 'center',
+		backgroundColor: colours.interactables
 	},
 	// Apparently React-Native needs both dimensions to be specified. Feel like there must be a way to only set one dimension and have the other automatically determined by aspect-ratio.
 	favouriteButtonImage: {
-		height: 35,
-		width: 39.375
+		height: 40,
+		width: 40
 	}
 });
 
 export default styles;
 export {
 	styles,
-	fontScale
+	fontScale,
+	colours
 }

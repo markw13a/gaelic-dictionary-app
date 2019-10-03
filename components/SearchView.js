@@ -4,6 +4,7 @@ import {Image, TextInput, Text, TouchableOpacity, View} from 'react-native';
 import styles, {fontScale} from '../res/styles';
 import SearchResults from './SearchResults';
 import {AddWordButton} from './AddWord';
+import {TextInputWithCross} from './Common';
 
 const SearchView = ({db}) => {
 	const [searchTerm, setSearchTerm] = useState();
@@ -53,25 +54,8 @@ const SearchView = ({db}) => {
 };
 
 const SearchBar = ({searchTerm, setSearchTerm}) => (
-	<View style={{...styles.buttonGroup, backgroundColor: '#F3F3F3'}}>
-		<TextInput
-			onChangeText={text => setSearchTerm(text)}
-			value={searchTerm} 
-			style={{...styles.searchBar, ...styles.textInput}}
-			placeholder="Search..."
-		/>
-		<TouchableOpacity
-            onPress={e => {
-				// Clear search bar
-				setSearchTerm('');
-			}}
-			style={{
-				width: '10%',
-				justifyContent: 'center'
-			}}
-        >
-			<Image style={{width: '60%', height: undefined, aspectRatio: 1}} source={require('../res/cross.png')} />
-        </TouchableOpacity>
+	<View style={{backgroundColor: '#055577', paddingVertical: '3%'}}>
+		<TextInputWithCross value={searchTerm} setValue={setSearchTerm} placeholder="Search..." />
 	</View>
 );
 

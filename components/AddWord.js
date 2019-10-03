@@ -3,7 +3,7 @@ import {Alert, Button, Image, Modal, View, TextInput, TouchableOpacity} from 're
 
 import styles from '../res/styles';
 import {useAddWordState, useAddWordDispatch} from '../res/AddWordContext';
-
+import {TextInputWithCross, ThemedButton} from './Common';
 
 // Displays the modal and pre-fills fields with any values provided
 // TODO: look at merging/otherwise refactoring with EditWordButton?
@@ -13,7 +13,7 @@ const AddWordButton = ({initialValues}) => {
 	return (
 		<View style={styles.verticalButtonGroup}>
 			<View style={styles.addWordOptionButton}>
-				<Button 
+				<ThemedButton 
 					title="Add new word"
 					onPress={() => {
 						// Display modal and pre-fill fields with this word's data
@@ -38,9 +38,8 @@ const EditWordButton = ({initialValues}) => {
 				dispatch({type: 'toggleVisible'});
 				dispatch({type: 'setInitialValues', value: initialValues});
 			}}
-			style={styles.favouriteButtonContainer}
    		>
-        	<Image style={styles.favouriteButtonImage} source={require('../res/edit.png')} />
+        	<Image style={{height: 50, width: 50}} source={require('../res/edit.png')} />
 	    </TouchableOpacity>
 	);
 };
@@ -79,12 +78,12 @@ const AddNewWordDialog = ({db}) => {
 		>
 			<View>
 				<View>
-					<TextInput style={{...styles.textInput}} value={gaelic} onChangeText={text => setGaelic(text)} placeholder="Gaelic" />
-					<TextInput style={{...styles.textInput}} value={english} onChangeText={text => setEnglish(text)} placeholder="English" />
+					<TextInputWithCross value={gaelic} setValue={setGaelic} placeholder="Gaelic" />
+					<TextInputWithCross value={english} setValue={setEnglish} placeholder="English" />
 				</View>
 				<View style={styles.verticalButtonGroup}>
 					<View style={styles.addWordOptionButton}>
-						<Button 
+						<ThemedButton 
 							title="Save" 
 							onPress={() => {
 								if( !gaelic || !english ) {
@@ -111,7 +110,7 @@ const AddNewWordDialog = ({db}) => {
 						/>
 					</View>
 					<View style={styles.addWordOptionButton}>
-						<Button 
+						<ThemedButton 
 							title="Cancel" 
 							onPress={() => dispatch({type: 'toggleVisible'})} 
 						/>
