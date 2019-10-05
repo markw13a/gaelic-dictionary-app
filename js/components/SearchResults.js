@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
 
-import styles, {fontScale} from '../res/styles';
+import styles, {fontScale} from '../styles';
 import {EditWordButton} from './AddWord';
 
 const SearchResults = ({items, db}) => (
@@ -49,8 +49,8 @@ const FavouriteButton = ({db, item}) => {
             style={styles.favouriteButtonContainer}
         >
             {favourited 
-                ? <Image style={styles.favouriteButtonImage} source={require('../res/star-solid.png')} /> 
-                : <Image style={styles.favouriteButtonImage} source={require('../res/star-regular.png')} />
+                ? <Image style={styles.favouriteButtonImage} source={require('../../res/star-solid.png')} /> 
+                : <Image style={styles.favouriteButtonImage} source={require('../../res/star-regular.png')} />
             }
         </TouchableOpacity>
     );

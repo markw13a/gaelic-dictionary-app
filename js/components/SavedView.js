@@ -3,7 +3,7 @@ import {View, Text} from 'react-native';
 
 import { AddWordButton } from './AddWord';
 import SearchResults from './SearchResults';
-import {useAddWordState, useAddWordDispatch} from '../res/AddWordContext';
+import {useAddWordState, useAddWordDispatch} from '../AddWordContext';
 
 const fetchDbItems = ({db, setItems}) => {
 	db.executeSql(

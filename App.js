@@ -6,14 +6,14 @@
 import React, {useState} from 'react';
 import {View} from 'react-native';
 
-import DictionaryDBConnection from './components/DB';
+import DictionaryDBConnection from './js/components/DB';
 
-import styles from './res/styles';
-import SavedView from './components/SavedView';
-import SearchView from './components/SearchView';
-import AddNewWordDialog from './components/AddWord';
-import {AddWordProvider} from './res/AddWordContext';
-import HotBar from './components/HotBar';
+import styles from './js/styles';
+import SavedView from './js/components/SavedView';
+import SearchView from './js/components/SearchView';
+import AddNewWordDialog from './js/components/AddWord';
+import {AddWordProvider} from './js/AddWordContext';
+import HotBar from './js/components/HotBar';
 
 const Main = () => {
 	// Store SQLite dictionary db in state

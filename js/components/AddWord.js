@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';	
-import {Alert, Button, Image, Modal, View, TextInput, TouchableOpacity} from 'react-native';
+import {Alert, Button, Image, Modal, View, TouchableOpacity} from 'react-native';
 
-import styles from '../res/styles';
-import {useAddWordState, useAddWordDispatch} from '../res/AddWordContext';
+import styles from '../styles';
+import {useAddWordState, useAddWordDispatch} from '../AddWordContext';
 import {TextInputWithCross, ThemedButton} from './Common';
 
 // Displays the modal and pre-fills fields with any values provided
@@ -39,17 +39,12 @@ const EditWordButton = ({initialValues}) => {
 				dispatch({type: 'setInitialValues', value: initialValues});
 			}}
    		>
-        	<Image style={{height: 50, width: 50}} source={require('../res/edit.png')} />
+        	<Image style={{height: 50, width: 50}} source={require('../../res/edit.png')} />
 	    </TouchableOpacity>
 	);
 };
 
-const sqlInsertWord = ({db, gaelic, gaelic_no_accents, english}) => db.executeSql(`INSERT INTO faclair (gaelic, gaelic_no_accents, english, favourited, user_created) VALUES ("${gaelic}", "${gaelic_no_accents}", "${english}", "${new Date().getTime()}", "1");`, []);
-
-// TODO: Use something like an upsert instead?
-const sqlDeleteWord = ({db, rowid}) => db.executeSql(`DELETE FROM faclair WHERE rowid = ${rowid} AND user_created = 1;`, []);
-
-const AddNewWordDialog = ({db, setRefresh}) => {
+const AddNewWordDialog = ({db}) => {
 	const [gaelic, setGaelic] = useState();
 	const [english, setEnglish] = useState();
 
@@ -71,6 +66,11 @@ const AddNewWordDialog = ({db, setRefresh}) => {
 
 	// Used to transform accent characters in to Latin equivalents
 	const characterConversionTable = {'á': 'a', 'Á': 'A', 'é': 'e', 'É': 'E', 'í': 'i', 'Í': 'I', 'ó':'o', 'Ó': 'O', 'ú': 'u', 'Ú': 'U'}
+
+	const sqlInsertWord = ({db, gaelic, gaelic_no_accents, english}) => db.executeSql(`INSERT INTO faclair (gaelic, gaelic_no_accents, english, favourited, user_created) VALUES ("${gaelic}", "${gaelic_no_accents}", "${english}", "${new Date().getTime()}", "1");`, []);
+
+	// TODO: Use something like an upsert instead?
+	const sqlDeleteWord = ({db, rowid}) => db.executeSql(`DELETE FROM faclair WHERE rowid = ${rowid} AND user_created = 1;`, []);
 
 	return (
 		<Modal

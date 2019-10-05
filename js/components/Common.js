@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, Image, TextInput, TouchableOpacity, View} from 'react-native';
 
-import styles, {colours} from '../res/styles';
+import styles, {colours} from '../styles';
 
 /**
  * Wraps image in a clickable area
@@ -42,7 +42,7 @@ const TextInputWithCross = ({value, setValue, ...props}) => (
 			style={{...styles.searchBar, ...styles.textInput, borderRadius: 20, flex: 9, height: 80}}
 			{...props}
 		/>
-		<IconButton style={{width: 30, height: 30}} source={require('../res/cross.png')} onPress={() => setValue('')} />
+		<IconButton style={{width: 30, height: 30}} source={require('../../res/cross.png')} onPress={() => setValue('')} />
 	</View>
 );
 
