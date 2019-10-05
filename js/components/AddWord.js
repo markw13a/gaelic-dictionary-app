@@ -12,7 +12,7 @@ const AddWordButton = ({initialValues}) => {
 
 	return (
 		<View style={styles.verticalButtonGroup}>
-			<View style={styles.addWordOptionButton}>
+			<View style={styles.themedButton}>
 				<ThemedButton 
 					title="Add new word"
 					onPress={() => {
@@ -83,7 +83,7 @@ const AddNewWordDialog = ({db}) => {
 					<TextInputWithCross value={english} setValue={setEnglish} placeholder="English" />
 				</View>
 				<View style={styles.verticalButtonGroup}>
-					<View style={styles.addWordOptionButton}>
+					<View style={styles.themedButton}>
 						<ThemedButton 
 							title="Save" 
 							onPress={() => {
@@ -116,14 +116,14 @@ const AddNewWordDialog = ({db}) => {
 							}} 
 						/>
 					</View>
-					<View style={styles.addWordOptionButton}>
+					<View style={styles.themedButton}>
 						<ThemedButton 
 							title="Cancel" 
 							onPress={() => dispatch({type: 'toggleVisible'})} 
 						/>
 					</View>
 					{initialValues['user_created'] && (
-						<View style={styles.addWordOptionButton}>
+						<View style={styles.themedButton}>
 							<Button 
 								title="Delete" 
 								onPress={

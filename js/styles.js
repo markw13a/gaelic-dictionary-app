@@ -31,10 +31,6 @@ const styles = StyleSheet.create({
 		height: '100%',
 		backgroundColor: colours.background
 	},
-	searchBar: {
-		// width: '90%',
-		backgroundColor: '#ffffff'
-	},
 	searchResultContainer: {
 		flexDirection: 'row',
 		width: '100%',
@@ -44,9 +40,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		width: '85%',
 		color: colours.text
-	},
-	scrollView: {
-		width: '100%'
 	},
 	buttonGroup: {
 		flexDirection: 'row',
@@ -65,16 +58,13 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-evenly',
 		alignItems: 'center'
 	},
-	addWordOptionButton: {
+	themedButton: {
 		marginVertical: "4%",
 		width: '60%'
 	},
 	textInput: {
-		// marginVertical: '2%',
 		...fontScale.fontLarge,
-		color: colours.text
 	},
-	// Button is sometimes unclickable without this property set
 	favouriteButtonContainer: {
 		height: 50,
 		width: 50,
@@ -84,7 +74,6 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		backgroundColor: colours.interactables
 	},
-	// Apparently React-Native needs both dimensions to be specified. Feel like there must be a way to only set one dimension and have the other automatically determined by aspect-ratio.
 	favouriteButtonImage: {
 		height: 40,
 		width: 40

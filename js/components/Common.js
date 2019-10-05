@@ -39,7 +39,7 @@ const TextInputWithCross = ({value, setValue, ...props}) => (
 		<TextInput
 			onChangeText={text => setValue(text)}
 			value={value} 
-			style={{...styles.searchBar, ...styles.textInput, borderRadius: 20, flex: 9, height: 80}}
+			style={{...styles.textInput, borderRadius: 20, flex: 9, height: 80}}
 			{...props}
 		/>
 		<IconButton style={{width: 30, height: 30}} source={require('../../res/cross.png')} onPress={() => setValue('')} />
