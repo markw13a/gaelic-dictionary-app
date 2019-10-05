@@ -27,6 +27,9 @@ const addWordReducer = (state, action) => {
 		case 'setInitialValues': {
 			return {...state, initialValues: action.value || {}};
 		}
+		case 'toggleRefresh': {
+			return {...state, refresh: !state.refresh};
+		}
 		default: {
 			throw new Error(`Unhandled action type: ${action.type}`);
 		}
@@ -34,7 +37,7 @@ const addWordReducer = (state, action) => {
 };
 
 const AddWordProvider = ({children}) => {
-	const [state, dispatch] = useReducer(addWordReducer, {visible: false, initialValues: {}});
+	const [state, dispatch] = useReducer(addWordReducer, {visible: false, initialValues: {}, refresh: false});
 
 	return (
 		<AddWordStateContext.Provider value={state}>

@@ -1,10 +1,33 @@
 import React, {useState, useEffect} from 'react';
-import {Image, TextInput, Text, TouchableOpacity, View} from 'react-native';
+import {Text, View} from 'react-native';
 
-import styles, {fontScale} from '../res/styles';
+import {fontScale} from '../res/styles';
 import SearchResults from './SearchResults';
 import {AddWordButton} from './AddWord';
 import {TextInputWithCross} from './Common';
+
+const fetchDbItems = ({db, setResults}) => {
+		// TODO: this query is very broad, and will always match SOMETHING
+		// Feel that, while this could appear a bit strange, it is not a problem. Maybe revisit after I've spent some time using this version
+		db.executeSql(
+			"SELECT "+
+				"gaelic,english,audio,favourited,rowid,user_created, 1 AS sortby, length(gaelic) "+
+			"FROM faclair "+
+			"WHERE "+
+				"faclair.gaelic LIKE '%"+searchTerm+"%' "+
+				"OR faclair.gaelic_no_accents LIKE '%"+searchTerm+"%' "+
+				"OR faclair.english LIKE '%"+searchTerm+"%';",
+		[])
+		.then(queryResponse => {
+			const rows = queryResponse[0].rows;
+			const processedResults = [];
+			// Haven't seen a less silly alternative to processing the results of the query
+			for(i=0; i < rows.length; i++) {
+				processedResults.push(rows.item(i));
+			}
+			setResults(processedResults);
+		});
+};
 
 const SearchView = ({db}) => {
 	const [searchTerm, setSearchTerm] = useState();
@@ -34,6 +57,8 @@ const SearchView = ({db}) => {
 				setResults(processedResults);
 			});
 		}
+
+
 	}, [searchTerm]);
 
 	return (

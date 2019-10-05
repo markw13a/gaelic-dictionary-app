@@ -49,10 +49,7 @@ const sqlInsertWord = ({db, gaelic, gaelic_no_accents, english}) => db.executeSq
 // TODO: Use something like an upsert instead?
 const sqlDeleteWord = ({db, rowid}) => db.executeSql(`DELETE FROM faclair WHERE rowid = ${rowid} AND user_created = 1;`, []);
 
-// Used to transform accent characters in to Latin equivalents
-const characterConversionTable = {'á': 'a', 'Á': 'A', 'é': 'e', 'É': 'E', 'í': 'i', 'Í': 'I', 'ó':'o', 'Ó': 'O', 'ú': 'u', 'Ú': 'U'}
-
-const AddNewWordDialog = ({db}) => {
+const AddNewWordDialog = ({db, setRefresh}) => {
 	const [gaelic, setGaelic] = useState();
 	const [english, setEnglish] = useState();
 
@@ -70,6 +67,10 @@ const AddNewWordDialog = ({db}) => {
 			setEnglish('');
 		}
 	}, [visible]);
+
+
+	// Used to transform accent characters in to Latin equivalents
+	const characterConversionTable = {'á': 'a', 'Á': 'A', 'é': 'e', 'É': 'E', 'í': 'i', 'Í': 'I', 'ó':'o', 'Ó': 'O', 'ú': 'u', 'Ú': 'U'}
 
 	return (
 		<Modal
@@ -101,10 +102,16 @@ const AddNewWordDialog = ({db}) => {
 									// Would rather have double entries than deleting user's data
 									sqlInsertWord({db, english, gaelic, gaelic_no_accents})
 									.then(() => sqlDeleteWord({db, rowid: initialValues.rowid}))
-									.then(() => dispatch({type: 'toggleVisible'}));
+									.then(() => {
+										dispatch({type: 'toggleVisible'});
+										dispatch({type: 'toggleRefresh'});
+									})
 								} else {
 									sqlInsertWord({db, english, gaelic, gaelic_no_accents})
-									.then(() => dispatch({type: 'toggleVisible'}));
+									.then(() => {
+										dispatch({type: 'toggleVisible'});
+										dispatch({type: 'toggleRefresh'});
+									})
 								}
 							}} 
 						/>
@@ -121,7 +128,10 @@ const AddNewWordDialog = ({db}) => {
 								title="Delete" 
 								onPress={
 									() => sqlDeleteWord({db, rowid: initialValues.rowid})
-										.then(() => dispatch({type: 'toggleVisible'}))
+										.then(() => {
+											dispatch({type: 'toggleVisible'});
+											dispatch({type: 'toggleRefresh'});
+										})
 								} 
 								color='red'
 							/>
