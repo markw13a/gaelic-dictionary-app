@@ -3,10 +3,8 @@ TODO:
 
 2) Seek out more complete primary dictionary database
 
-3) Have saved items list refresh after user adds or deletes a term
+3) Reduce tech debt around styles
 
-4) Reduce tech debt around styles
+4) Create nicer icon
 
-5) Create nicer icon
-
-6) Figure out why app display name is not showing on app installed on phone
+5) Investigate issue where card text containing " cannot be saved. Likely just need to escape character.
