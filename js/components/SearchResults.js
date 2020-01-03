@@ -36,7 +36,7 @@ const FavouriteButton = ({db, item}) => {
             onPress={e => {
                 // Toggle value of favourited
                 db.executeSql(
-                    "UPDATE faclair " + 
+                    "UPDATE search " + 
                     "SET favourited = " + (favourited === 0 ? new Date().getTime() : 0) + 
                     " WHERE rowid = " + item.rowid + ";", 
                     []

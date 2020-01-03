@@ -12,30 +12,38 @@ const SearchView = ({db}) => {
 
 	// Retrieve and display results as the user is typing
 	useEffect(() => {
-		if(db) {
-			// TODO: this query is very broad, and will always match SOMETHING
-			// Feel that, while this could appear a bit strange, it is not a problem. Maybe revisit after I've spent some time using this version
-			db.executeSql(
-				"SELECT "+
-					"gaelic,english,audio,favourited,rowid,user_created, 1 AS sortby, length(gaelic) "+
-				"FROM faclair "+
-				"WHERE "+
-					"faclair.gaelic LIKE '%"+searchTerm+"%' "+
-					"OR faclair.gaelic_no_accents LIKE '%"+searchTerm+"%' "+
-					"OR faclair.english LIKE '%"+searchTerm+"%';",
-			[])
-			.then(queryResponse => {
-				const rows = queryResponse[0].rows;
-				const processedResults = [];
-				// Haven't seen a less silly alternative to processing the results of the query
-				for(i=0; i < rows.length; i++) {
-					processedResults.push(rows.item(i));
-				}
+		let mounted = true;
+
+		// TODO: ordering by length of gaelic is a bit dodgy.
+		// Will not give intended effect if user searches for something in English
+		// Sorting by length is a primitive way of ordering by "relevance"
+		// Guess that shortest result will be most similar to string provided
+		// Seems to work ok
+		db.executeSql(
+			"SELECT "+
+				"gaelic,english,favourited,rowid,user_created, 1 AS sortby, length(gaelic) "+
+			"FROM search "+
+			"WHERE "+
+				"search.gaelic MATCH '"+searchTerm+"' "+
+				"OR search.gaelic_no_accents MATCH '"+searchTerm+"' "+
+				"OR search.english MATCH '"+searchTerm+"'"+
+			"ORDER BY length(gaelic) ASC;",
+		[])
+		.then(queryResponse => {
+			const rows = queryResponse[0].rows;
+			const processedResults = [];
+			// Haven't seen a less silly alternative to processing the results of the query
+			for(i=0; i < rows.length; i++) {
+				processedResults.push(rows.item(i));
+			}
+
+			// Don't set results if user has already changed searchTerm
+			if(mounted) {
 				setResults(processedResults);
-			});
-		}
+			}
+		});
 
-
+		return () => mounted = false;
 	}, [searchTerm]);
 
 	return (

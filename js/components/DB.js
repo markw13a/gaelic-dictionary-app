@@ -1,47 +1,41 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import SQLite from 'react-native-sqlite-storage';
 import dbUpgrade from '../dbUpgrade';
 
 // Global DB settings
 SQLite.enablePromise(true);
 
-const DictionaryDBConnection = ({db, setdb}) => {
+const useDb = () => {
+    const [db, setdb] = useState();
+
     useEffect(() => {
         if( !db ) {
             // Initialise databse
-            SQLite.openDatabase({name : 'test.db', createFromLocation: '~faclair.db'})
-            .then(res => setdb(res));
-        } else {
-            // Check for updates to databse schema
-            db.executeSql(
-                "SELECT MAX(version) FROM Version;"
-                , []
-            ).then( res => {
-                const version = Object.values(res[0].rows.item(0))[0];
-
+            SQLite.openDatabase({name: 'test.db', createFromLocation: '~faclair-ur.db'})
+            .then( async (res) =>  {
                 // Perform the necessary schema upgrades
-                doUpgradeDb({db, version});
-            }).catch( err => {
-                // User has old database that did not track version number
-                if(err.message && err.message.includes("no such table")) {
-                    doUpgradeDb({db, version: 0});
-                } else {
-                    console.error(err);
-                }
-            }); 
-        }
+                await doUpgradeDb(res);
+                // Create virtual table for full-text searches
+                // await initVirtualSearchTable(res);
 
+                // Make the db available to the rest of the application
+                setdb(res);
+            });
+        } 
         // Close database connection when component is unmounted
         return () => db && db.close();
       }, [db]);
     
-    return null;
+    return db;
 };
 
 /**
  * @param version current db version. Can be 0
  */
-const doUpgradeDb = ({db, version}) => {
+const doUpgradeDb = async (db) => {
+    const res = await db.executeSql("SELECT MAX(version) FROM Version;", []);
+    const version = Object.values(res[0].rows.item(0))[0];
+
     // targetVersion is latest version of db schema
     if( version == dbUpgrade.targetVersion) return;
 
@@ -55,4 +49,4 @@ const doUpgradeDb = ({db, version}) => {
     ]).then(() => doUpgradeDb({db, version: upgradeVersion}));
 };
 
-export default DictionaryDBConnection;
+export default useDb;

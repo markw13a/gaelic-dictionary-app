@@ -65,12 +65,34 @@ const AddNewWordDialog = ({db}) => {
 
 
 	// Used to transform accent characters in to Latin equivalents
-	const characterConversionTable = {'á': 'a', 'Á': 'A', 'é': 'e', 'É': 'E', 'í': 'i', 'Í': 'I', 'ó':'o', 'Ó': 'O', 'ú': 'u', 'Ú': 'U'}
+	const characterConversionTable = {
+		'á': 'a', 
+		'Á': 'A', 
+		'é': 'e', 
+		'É': 'E', 
+		'í': 'i', 
+		'Í': 'I',
+		'ó':'o', 
+		'Ó': 'O', 
+		'ú': 'u', 
+		'Ú': 'U',
+	
+		'à': 'a',
+		'è': 'e',
+		'ì': 'i',
+		'ò': 'o',
+		'ù': 'u',
+		'À': 'A',
+		'È': 'E',
+		'Ì': 'I',
+		'Ò': 'O',
+		'Ù': 'U'
+	};
 
-	const sqlInsertWord = ({db, gaelic, gaelic_no_accents, english}) => db.executeSql(`INSERT INTO faclair (gaelic, gaelic_no_accents, english, favourited, user_created) VALUES ("${gaelic}", "${gaelic_no_accents}", "${english}", "${new Date().getTime()}", "1");`, []);
+	const sqlInsertWord = ({db, gaelic, gaelic_no_accents, english}) => db.executeSql(`INSERT INTO search (gaelic, gaelic_no_accents, english, favourited, user_created) VALUES ("${gaelic}", "${gaelic_no_accents}", "${english}", "${new Date().getTime()}", "1");`, []);
 
 	// TODO: Use something like an upsert instead?
-	const sqlDeleteWord = ({db, rowid}) => db.executeSql(`DELETE FROM faclair WHERE rowid = ${rowid} AND user_created = 1;`, []);
+	const sqlDeleteWord = ({db, rowid}) => db.executeSql(`DELETE FROM search WHERE rowid=${rowid} AND user_created = '1';`, []);
 
 	return (
 		<Modal
@@ -95,7 +117,7 @@ const AddNewWordDialog = ({db}) => {
 								if(!db) return;
 
 								// Used later to allow the user to look up word without typing out correct accents
-								const gaelic_no_accents = gaelic.replace(/[áÁéÉíÍóÓúÚ]/gi, (match) => characterConversionTable[match]);
+								const gaelic_no_accents = gaelic.replace(/[áÁéÉíÍóÓúÚàèìòùÀÈÌÒÙ]/gi, (match) => characterConversionTable[match]);
 
 								if(initialValues['user_created']) {
 									// Insert new entry before deleting old one
@@ -105,7 +127,7 @@ const AddNewWordDialog = ({db}) => {
 									.then(() => {
 										dispatch({type: 'toggleVisible'});
 										dispatch({type: 'toggleRefresh'});
-									})
+									});
 								} else {
 									sqlInsertWord({db, english, gaelic, gaelic_no_accents})
 									.then(() => {
