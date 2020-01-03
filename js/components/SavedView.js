@@ -7,7 +7,7 @@ import {useAddWordState, useAddWordDispatch} from '../AddWordContext';
 
 const fetchDbItems = ({db, setItems}) => {
 	db.executeSql(
-		"SELECT gaelic, english, favourited, rowid, user_created FROM search WHERE favourited >= 1 ORDER BY favourited DESC;",
+		"SELECT gaelic, english, favourited, rowid, user_created FROM search WHERE favourited >= 1 ORDER BY CAST(favourited AS INTEGER) DESC;",
 		 []
 	).then(queryResponse => {
 		const rows = queryResponse[0].rows;
@@ -16,7 +16,6 @@ const fetchDbItems = ({db, setItems}) => {
 		for(i=0; i < rows.length; i++) {
 			processedResults.push(rows.item(i));
 		}
-		console.warn(processedResults);
 		setItems(processedResults);
 	});
 };
