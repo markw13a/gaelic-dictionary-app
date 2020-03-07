@@ -4,50 +4,29 @@
  */
 
 import React, {useState} from 'react';
-import {Text, View} from 'react-native';
+import {View} from 'react-native';
 
-import useDb from './js/components/DB';
-
-import styles, {fontScale} from './js/styles';
-import SavedView from './js/components/SavedView';
-import SearchView from './js/components/SearchView';
-import AddNewWordDialog from './js/components/AddWord';
-import {AddWordProvider} from './js/AddWordContext';
+import SavedView from './js/components/Pages/SavedView';
+import SearchView from './js/components/Pages/SearchView';
+import {DbProvider} from "./js/db";
 import HotBar from './js/components/HotBar';
-
+import {styles} from "./js/styles";
 
 const Main = () => {
-	// Store SQLite dictionary db in state
-	// Managed via DBConnection component
-	const db = useDb();
 	// User can switch between searching the dictionary, viewing previous searches and viewing saved words/phrases
 	const [activeView, setActiveView] = useState();
 
-	if(!db) {
-		// TODO: Make a proper loading screen
-		return (
-			<View style={styles.appContainer}>
-				<Text style={fontScale.fontLarge} > 
-					Initialising database... 
-				</Text>
-			</View>
-		);
-	}
-
 	return (
-		<>
+		<DbProvider>
 			<View style={styles.appContainer}>
-				<AddWordProvider>
 					{
 						activeView === 'saved'
-						? <SavedView db={db} />
-						: <SearchView db={db} />
+						? <SavedView />
+						: <SearchView />
 					}
-					<AddNewWordDialog db={db} />
-				</AddWordProvider>
 				<HotBar setActiveView={setActiveView} />
 			</View>
-		</>
+		</DbProvider>
 	);
 };
 

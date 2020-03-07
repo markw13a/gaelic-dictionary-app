@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {View, Text} from 'react-native';
 
-import { AddWordButton } from './AddWord';
-import SearchResults from './SearchResults';
-import {useAddWordState, useAddWordDispatch} from '../AddWordContext';
+import { AddWordButton } from '../AddWord';
+import SearchResults from '../SearchResults';
+import { useDb } from '../../db';
+import LoadingView from './LoadingView';
 
 const fetchDbItems = ({db, setItems}) => {
 	db.executeSql(
@@ -23,11 +24,10 @@ const fetchDbItems = ({db, setItems}) => {
 /**
  * Displays all words favourited or created by the user
  */
-const SavedView = ({db}) => {
+const SavedView = () => {
+	const db = useDb();
 	const [items, setItems] = useState();
-
-	const {refresh} = useAddWordState();
-	const dispatch = useAddWordDispatch();
+	const [refresh, setRefresh] = useState();
 
 	// Always want this to run on first mount
 	useEffect(() => {
@@ -41,8 +41,12 @@ const SavedView = ({db}) => {
 		if(!db || !refresh) return;
 
 		fetchDbItems({db, setItems});
-		dispatch({type: 'toggleRefresh'});
-	}, [db, refresh]);
+		setRefresh(!refresh);
+	}, [db, refresh, setItems]);
+
+	if(!db) {
+		return <LoadingView />;
+	}
 
 	return (
 		<>
@@ -53,7 +57,7 @@ const SavedView = ({db}) => {
 			}
 			<AddWordButton />
 		</>
-		);
+	);
 };
 
 export default SavedView;

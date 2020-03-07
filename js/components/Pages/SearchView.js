@@ -1,18 +1,23 @@
 import React, {useState, useEffect} from 'react';
 import {Text, View} from 'react-native';
 
-import {fontScale} from '../styles';
-import SearchResults from './SearchResults';
-import {AddWordButton} from './AddWord';
-import {TextInputWithCross} from './Common';
+import {fontScale} from '../../styles';
+import SearchResults from '../SearchResults';
+import {AddWordButton} from '../AddWord';
+import {TextInputWithCross} from '../Common';
+import { useDb } from '../../db';
+import LoadingView from "./LoadingView";
 
-const SearchView = ({db}) => {
+const SearchView = () => {
+	const db = useDb();
 	const [searchTerm, setSearchTerm] = useState();
 	const [results, setResults] = useState();
 
 	// Retrieve and display results as the user is typing
 	useEffect(() => {
 		let mounted = true;
+
+		if(!db) return;
 
 		// TODO: ordering by length of gaelic is a bit dodgy.
 		// Will not give intended effect if user searches for something in English
@@ -44,7 +49,11 @@ const SearchView = ({db}) => {
 		});
 
 		return () => mounted = false;
-	}, [searchTerm]);
+	}, [db, searchTerm]);
+
+	if(!db) {
+		return <LoadingView />;
+	}
 
 	return (
 		<>
@@ -57,7 +66,7 @@ const SearchView = ({db}) => {
 						<AddWordButton initialValues={{gaelic: searchTerm}} />
 					</View>
 				)
-				: <SearchResults items={results} db={db} />
+				: <SearchResults items={results} />
 			}
 		</>
 	);

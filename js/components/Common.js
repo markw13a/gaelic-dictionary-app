@@ -1,6 +1,5 @@
 import React from 'react';
 import {Button, Image, TextInput, TouchableOpacity, View} from 'react-native';
-
 import styles, {colours} from '../styles';
 
 /**

@@ -1,93 +1,38 @@
-import React, {useEffect, useState} from 'react';	
+import React, {useState} from 'react';	
 import {Alert, Button, Image, Modal, View, TouchableOpacity} from 'react-native';
 
 import styles from '../styles';
-import {useAddWordState, useAddWordDispatch} from '../AddWordContext';
 import {TextInputWithCross, ThemedButton} from './Common';
+import { useDb } from '../db';
 
-// Displays the modal and pre-fills fields with any values provided
-// TODO: look at merging/otherwise refactoring with EditWordButton?
-const AddWordButton = ({initialValues}) => {
-	const dispatch = useAddWordDispatch();
+const CHARACTER_CONVERSION_TABLE = {
+	'á': 'a', 
+	'Á': 'A', 
+	'é': 'e', 
+	'É': 'E', 
+	'í': 'i', 
+	'Í': 'I',
+	'ó':'o', 
+	'Ó': 'O', 
+	'ú': 'u', 
+	'Ú': 'U',
 
-	return (
-		<View style={styles.verticalButtonGroup}>
-			<View style={styles.themedButton}>
-				<ThemedButton 
-					title="Add new word"
-					onPress={() => {
-						// Display modal and pre-fill fields with this word's data
-						dispatch({type: 'toggleVisible'});
-						dispatch({type: 'setInitialValues', value: initialValues});
-					}}
-				/>
-			</View>
-		</View>
-	);
+	'à': 'a',
+	'è': 'e',
+	'ì': 'i',
+	'ò': 'o',
+	'ù': 'u',
+	'À': 'A',
+	'È': 'E',
+	'Ì': 'I',
+	'Ò': 'O',
+	'Ù': 'U'
 };
 
-// Displays the modal and pre-fills fields with any values provided
-const EditWordButton = ({initialValues}) => {
-	const dispatch = useAddWordDispatch();
-
-	return (
-		<TouchableOpacity
-			title="Edit"
-			onPress={() => {
-				// Display modal and pre-fill fields with this word's data
-				dispatch({type: 'toggleVisible'});
-				dispatch({type: 'setInitialValues', value: initialValues});
-			}}
-   		>
-        	<Image style={{height: 50, width: 50}} source={require('../../res/edit.png')} />
-	    </TouchableOpacity>
-	);
-};
-
-const AddNewWordDialog = ({db}) => {
-	const [gaelic, setGaelic] = useState();
-	const [english, setEnglish] = useState();
-
-	const {visible, initialValues} = useAddWordState();
-	const dispatch = useAddWordDispatch();
-	
-	useEffect(() => {
-		// Pre-fill fields with available data when modal is made visible
-		if(visible) {
-			setGaelic(initialValues.gaelic);
-			setEnglish(initialValues.english);
-		} else {
-			// Clear fields again when modal is hidden
-			setGaelic('');
-			setEnglish('');
-		}
-	}, [visible]);
-
-
-	// Used to transform accent characters in to Latin equivalents
-	const characterConversionTable = {
-		'á': 'a', 
-		'Á': 'A', 
-		'é': 'e', 
-		'É': 'E', 
-		'í': 'i', 
-		'Í': 'I',
-		'ó':'o', 
-		'Ó': 'O', 
-		'ú': 'u', 
-		'Ú': 'U',
-	
-		'à': 'a',
-		'è': 'e',
-		'ì': 'i',
-		'ò': 'o',
-		'ù': 'u',
-		'À': 'A',
-		'È': 'E',
-		'Ì': 'I',
-		'Ò': 'O',
-		'Ù': 'U'
-	};
+const AddNewWordDialog = ({toggleVisibility, initialValues}) => {
+	const db = useDb();
+	const [gaelic, setGaelic] = useState(initialValues.gaelic);
+	const [english, setEnglish] = useState(initialValues.english);
 
 	const sqlInsertWord = ({db, gaelic, gaelic_no_accents, english}) => db.executeSql(`INSERT INTO search (gaelic, gaelic_no_accents, english, favourited, user_created) VALUES ("${gaelic}", "${gaelic_no_accents}", "${english}", "${new Date().getTime()}", "1");`, []);
 
@@ -97,7 +42,7 @@ const AddNewWordDialog = ({db}) => {
 	return (
 		<Modal
 			transparent={false}
-			visible={visible}
+			visible={true}
 		>
 			<View>
 				<View>
@@ -117,7 +62,7 @@ const AddNewWordDialog = ({db}) => {
 								if(!db) return;
 
 								// Used later to allow the user to look up word without typing out correct accents
-								const gaelic_no_accents = gaelic.replace(/[áÁéÉíÍóÓúÚàèìòùÀÈÌÒÙ]/gi, (match) => characterConversionTable[match]);
+								const gaelic_no_accents = gaelic.replace(/[áÁéÉíÍóÓúÚàèìòùÀÈÌÒÙ]/gi, (match) => CHARACTER_CONVERSION_TABLE[match]);
 
 								if(initialValues['user_created']) {
 									// Insert new entry before deleting old one
@@ -125,14 +70,14 @@ const AddNewWordDialog = ({db}) => {
 									sqlInsertWord({db, english, gaelic, gaelic_no_accents})
 									.then(() => sqlDeleteWord({db, rowid: initialValues.rowid}))
 									.then(() => {
-										dispatch({type: 'toggleVisible'});
-										dispatch({type: 'toggleRefresh'});
+										toggleVisibility();
+										// dispatch({type: 'toggleRefresh'});
 									});
 								} else {
 									sqlInsertWord({db, english, gaelic, gaelic_no_accents})
 									.then(() => {
-										dispatch({type: 'toggleVisible'});
-										dispatch({type: 'toggleRefresh'});
+										toggleVisibility();
+										// dispatch({type: 'toggleRefresh'});
 									})
 								}
 							}} 
@@ -141,7 +86,7 @@ const AddNewWordDialog = ({db}) => {
 					<View style={styles.themedButton}>
 						<ThemedButton 
 							title="Cancel" 
-							onPress={() => dispatch({type: 'toggleVisible'})} 
+							onPress={toggleVisibility} 
 						/>
 					</View>
 					{initialValues['user_created'] && (
@@ -151,8 +96,8 @@ const AddNewWordDialog = ({db}) => {
 								onPress={
 									() => sqlDeleteWord({db, rowid: initialValues.rowid})
 										.then(() => {
-											dispatch({type: 'toggleVisible'});
-											dispatch({type: 'toggleRefresh'});
+											toggleVisibility();
+											// dispatch({type: 'toggleRefresh'});
 										})
 								} 
 								color='red'
@@ -164,6 +109,55 @@ const AddNewWordDialog = ({db}) => {
 		</Modal>
 	);
 };
+
+const useWordDialog = () => {
+	const [visible, setIsVisible] = useState(false);	
+	const toggleVisibility = () => setIsVisible(!visible);
+	
+	return ({
+		visible,
+		toggleVisibility
+	});
+};
+
+const AddWordButton = ({initialValues, visible, toggleVisibility}) => (
+	<>
+		<View style={styles.verticalButtonGroup}>
+			<View style={styles.themedButton}>
+				<ThemedButton 
+					title="Add new word"
+					onPress={toggleVisibility}
+				/>
+			</View>
+		</View>
+		{
+			visible
+			&& <AddNewWordDialog 
+					initialValues={initialValues} 
+					toggleVisibility={toggleVisibility} 
+				/>
+		}
+	</>
+);
+
+// Displays the modal and pre-fills fields with any values provided
+const EditWordButton = ({initialValues, visible, toggleVisibility}) => (
+	<>
+		<TouchableOpacity
+			title="Edit"
+			onPress={toggleVisibility}
+		>
+			<Image style={{height: 50, width: 50}} source={require('../../res/edit.png')} />
+		</TouchableOpacity>
+		{
+			visible
+			&& <AddNewWordDialog 
+					initialValues={initialValues} 
+					toggleVisibility={toggleVisibility} 
+				/>
+		}
+	</>
+);
 
 export default AddNewWordDialog;
 
