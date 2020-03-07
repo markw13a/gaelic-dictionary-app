@@ -2,16 +2,19 @@ import React, {useState, useEffect} from 'react';
 import {Text, View} from 'react-native';
 
 import {fontScale} from '../../styles';
+import { useToggleModal } from '../../Hooks';
 import SearchResults from '../SearchResults';
 import {AddWordButton} from '../AddWord';
 import {TextInputWithCross} from '../Common';
 import { useDb } from '../../db';
 import LoadingView from "./LoadingView";
+import AddWordDialog from '../AddWordDialog';
 
 const SearchView = () => {
 	const db = useDb();
 	const [searchTerm, setSearchTerm] = useState();
 	const [results, setResults] = useState();
+	const {isModalVisible, toggleIsModalVisible} = useToggleModal();
 
 	// Retrieve and display results as the user is typing
 	useEffect(() => {
@@ -62,11 +65,17 @@ const SearchView = () => {
 				results && results.length === 0 && searchTerm
 				? (
 					<View style={{flex:1, alignItems: 'center'}}>
-						<Text style={{...fontScale.fontSmall}} > No results. Click below to add this word to your saved searches </Text>
-						<AddWordButton initialValues={{gaelic: searchTerm}} />
+						<Text style={{...fontScale.fontSmall}}> 
+							No results. Click below to add this word to your saved searches 
+						</Text>
+						<AddWordButton onPress={toggleIsModalVisible} />
 					</View>
 				)
 				: <SearchResults items={results} />
+			}
+			{
+				isModalVisible
+				&& <AddWordDialog gaelic={searchTerm} />
 			}
 		</>
 	);

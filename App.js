@@ -2,7 +2,6 @@
  * Focusing first on building the interface with dummy data
  * Doing this as both react-native and SQLite are new to me, and react-native seems like it'll be easiest to start with 
  */
-
 import React, {useState} from 'react';
 import {View} from 'react-native';
 

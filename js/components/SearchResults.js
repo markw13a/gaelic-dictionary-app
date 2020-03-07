@@ -25,7 +25,7 @@ const Result = ({item}) => (
         <View>
             {
                 item["user_created"]
-                ? EditWordButton({initialValues:item})
+                ? EditWordButton(item)
                 : FavouriteButton({item})
             }
         </View>

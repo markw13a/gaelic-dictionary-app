@@ -1,10 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {View, Text} from 'react-native';
 
 import { AddWordButton } from '../AddWord';
 import SearchResults from '../SearchResults';
 import { useDb } from '../../db';
 import LoadingView from './LoadingView';
+import { useToggleModal } from '../../Hooks';
+import AddWordDialog from '../AddWordDialog';
 
 const fetchDbItems = ({db, setItems}) => {
 	db.executeSql(
@@ -27,22 +29,27 @@ const fetchDbItems = ({db, setItems}) => {
 const SavedView = () => {
 	const db = useDb();
 	const [items, setItems] = useState();
-	const [refresh, setRefresh] = useState();
+	const [shouldRefreshData, setShouldRefreshData] = useState();
+	const {isModalVisible, toggleIsModalVisible} = useToggleModal();
+
+	const addWordDialogOnDismiss = useCallback(() => {
+		toggleIsModalVisible();
+		setShouldRefreshData(true);
+	}, [setShouldRefreshData, toggleIsModalVisible]);
 
 	// Always want this to run on first mount
 	useEffect(() => {
 		if(!db) return;
-
 		fetchDbItems({db, setItems});
 	}, [db]);
 
 	// Run the query again if a user action necessitates a refresh
 	useEffect(() => {
-		if(!db || !refresh) return;
+		if(!db || !shouldRefreshData) return;
 
 		fetchDbItems({db, setItems});
-		setRefresh(!refresh);
-	}, [db, refresh, setItems]);
+		setShouldRefreshData(false);
+	}, [db, setShouldRefreshData, setItems]);
 
 	if(!db) {
 		return <LoadingView />;
@@ -55,7 +62,11 @@ const SavedView = () => {
 				? <View style={{flex:1}}><Text>You haven't favourited any words or phrases yet.</Text></View>
 				: <SearchResults items={items} db={db} />
 			}
-			<AddWordButton />
+			{
+				isModalVisible
+				&& <AddWordDialog onDismiss={addWordDialogOnDismiss} />
+			}
+			<AddWordButton onPress={toggleIsModalVisible} />
 		</>
 	);
 };
