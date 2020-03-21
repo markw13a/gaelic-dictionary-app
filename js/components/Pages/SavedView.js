@@ -5,6 +5,7 @@ import { AddWordButton } from '../AddWord';
 import SearchResults from '../SearchResults';
 import { useDb } from '../../db';
 import LoadingView from './LoadingView';
+import { useFocusEffect } from '@react-navigation/native';
 
 const SavedViewIcon = ({color}) => (
 	<Image
@@ -39,7 +40,7 @@ const SavedView = () => {
 	const db = useDb();
 	const [items, setItems] = useState();
 
-	useEffect(() => {
+	useFocusEffect(() => {
 		if(!db) return;
 		fetchDbItems({db, setItems});
 	});

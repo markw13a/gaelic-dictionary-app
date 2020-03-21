@@ -1,6 +1,6 @@
 import React from 'react';
-import {Button, Image, TextInput, TouchableOpacity, View} from 'react-native';
-import styles, {colours} from '../styles';
+import {Button, Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import styles, {colours, fontScale} from '../styles';
 
 /**
  * Wraps image in a clickable area
@@ -26,23 +26,31 @@ const ThemedButton = (props) => (
 	<Button {...props} color={colours.interactables} />
 );
 
-const TextInputWithCross = ({value, setValue, ...props}) => (
+const TextInputWithCross = ({value, setValue, label, ...props}) => (
 	<View style={{
-			flexDirection: 'row', 
+			flexDirection: 'column',
 			width: '90%', 
 			borderRadius: 20, 
-			backgroundColor: '#ffffff',
-			marginHorizontal: '5%', 
+			marginHorizontal: 5,
+			marginVertical: 5
 		}}
 	>
-		<TextInput
-			onChangeText={text => setValue(text)}
-			value={value} 
-			style={{...styles.textInput, borderRadius: 20, flex: 9, height: 80}}
-			{...props}
-		/>
-		<IconButton style={{width: 30, height: 30}} source={require('../../res/cross.png')} onPress={() => setValue('')} />
+		{label && <Text style={{...fontScale.fontSmall}}>{label}</Text>}
+		<View style={{
+				flexDirection: 'row', 
+				backgroundColor: '#ffffff',
+			}}
+		>
+			<TextInput
+				onChangeText={text => setValue(text)}
+				value={value} 
+				style={{...fontScale.fontMedium, borderRadius: 20, flex: 9, height: 80}}
+				{...props}
+			/>
+			<IconButton style={{width: 25, height: 25}} source={require('../../res/cross.png')} onPress={() => setValue('')} />
+		</View>
 	</View>
+
 );
 
 export {

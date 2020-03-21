@@ -1,10 +1,10 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {Alert, Button, View} from 'react-native';
 
 import styles from '../../styles';
 import { useDb } from '../../db';
 import {TextInputWithCross, ThemedButton} from '../Common';
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 const CHARACTER_CONVERSION_TABLE = {
 	'á': 'a', 
@@ -30,12 +30,25 @@ const CHARACTER_CONVERSION_TABLE = {
 	'Ù': 'U'
 };
 
-// TODO: revisit dodgy use of props here. Probably better to use deconstruction syntax
-const WordView = props => {
+const WordView = ({route: {params}}) => {
 	const db = useDb();
 	const navigation = useNavigation();
-	const [gaelic, setGaelic] = useState(props.gaelic);
-	const [english, setEnglish] = useState(props.english);
+	const [gaelic, setGaelic] = useState();
+	const [english, setEnglish] = useState();
+
+	console.warn(params)
+
+	useFocusEffect(() => {
+		// Set params when screen is opened
+		setGaelic(params.gaelic);
+		setEnglish(params.english);
+
+		// Nullify fields when user switches screen
+		return () => {
+			setGaelic();
+			setEnglish();
+		};
+	});
 
 	const sqlInsertWord = ({db, gaelic, gaelic_no_accents, english}) => db.executeSql(`INSERT INTO search (gaelic, gaelic_no_accents, english, favourited, user_created) VALUES ("${gaelic}", "${gaelic_no_accents}", "${english}", "${new Date().getTime()}", "1");`, []);
 
@@ -45,8 +58,8 @@ const WordView = props => {
 	return (
 		<View>
 			<View>
-				<TextInputWithCross value={gaelic} setValue={setGaelic} placeholder="Gaelic" />
-				<TextInputWithCross value={english} setValue={setEnglish} placeholder="English" />
+				<TextInputWithCross value={gaelic} setValue={setGaelic} label="Gaelic" />
+				<TextInputWithCross value={english} setValue={setEnglish} label="English" />
 			</View>
 			<View style={styles.verticalButtonGroup}>
 				<View style={styles.themedButton}>
@@ -63,11 +76,11 @@ const WordView = props => {
 							// Used later to allow the user to look up word without typing out correct accents
 							const gaelic_no_accents = gaelic.replace(/[áÁéÉíÍóÓúÚàèìòùÀÈÌÒÙ]/gi, (match) => CHARACTER_CONVERSION_TABLE[match]);
 
-							if(props['user_created']) {
+							if(params['user_created']) {
 								// Insert new entry before deleting old one
 								// Would rather have double entries than delete user's data
 								sqlInsertWord({db, english, gaelic, gaelic_no_accents})
-								.then(() => sqlDeleteWord({db, rowid: props.rowid}))
+								.then(() => sqlDeleteWord({db, rowid: params.rowid}))
 								.then(() => navigation.goBack());
 							} else {
 								sqlInsertWord({db, english, gaelic, gaelic_no_accents})
@@ -82,12 +95,12 @@ const WordView = props => {
 						onPress={() => navigation.goBack()} 
 					/>
 				</View>
-				{props['user_created'] && (
+				{params['user_created'] && (
 					<View style={styles.themedButton}>
 						<Button 
 							title="Delete" 
 							onPress={
-								() => sqlDeleteWord({db, rowid: props.rowid})
+								() => sqlDeleteWord({db, rowid: params.rowid})
 									.then(() => navigation.goBack())
 							} 
 							color='red'

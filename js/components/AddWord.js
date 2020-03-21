@@ -27,9 +27,10 @@ const EditWordButton = ({item}) => {
 	return (
 		<TouchableOpacity
 			title="Edit"
-			onPress={() => navigation.navigate(PAGE_NAMES.WORD)}
+			onPress={() => navigation.navigate(PAGE_NAMES.WORD, item)}
+            style={styles.favouriteButtonContainer}
 		>
-			<Image style={{height: 50, width: 50}} source={require('../../res/edit.png')} />
+			<Image style={styles.favouriteButtonImage} source={require('../../res/edit.png')} />
 		</TouchableOpacity>
 	);
 }

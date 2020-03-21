@@ -62,9 +62,6 @@ const styles = StyleSheet.create({
 		marginVertical: "4%",
 		width: '60%'
 	},
-	textInput: {
-		...fontScale.fontLarge,
-	},
 	favouriteButtonContainer: {
 		height: 50,
 		width: 50,
