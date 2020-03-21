@@ -2,23 +2,11 @@ import React, {useState, useEffect} from 'react';
 import {Text, Image, View} from 'react-native';
 
 import {fontScale} from '../../styles';
-import { useToggleModal } from '../../Hooks';
 import SearchResults from '../SearchResults';
 import {AddWordButton} from '../AddWord';
 import {TextInputWithCross} from '../Common';
 import { useDb } from '../../db';
 import LoadingView from "./LoadingView";
-import AddWordDialog from '../AddWordDialog';
-
-const editOnPress = item => {
-	setModalItem(item);
-	toggleIsModalVisible();
-};
-
-const addWordOnPress = item => {
-	setModalItem(item);
-	toggleIsModalVisible();
-};
 
 const SearchViewIcon = ({color}) => (
 	<Image
@@ -35,7 +23,6 @@ const SearchView = () => {
 	const db = useDb();
 	const [searchTerm, setSearchTerm] = useState();
 	const [results, setResults] = useState();
-	const {isModalVisible, toggleIsModalVisible} = useToggleModal();
 
 	// Retrieve and display results as the user is typing
 	useEffect(() => {
@@ -89,14 +76,10 @@ const SearchView = () => {
 						<Text style={{...fontScale.fontSmall}}> 
 							No results. Click below to add this word to your saved searches 
 						</Text>
-						<AddWordButton onPress={toggleIsModalVisible} />
+						<AddWordButton />
 					</View>
 				)
 				: <SearchResults items={results} />
-			}
-			{
-				isModalVisible
-				&& <AddWordDialog gaelic={searchTerm} onDismiss={toggleIsModalVisible} />
 			}
 		</>
 	);

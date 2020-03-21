@@ -1,28 +1,38 @@
 import React from 'react';	
 import {Image, View, TouchableOpacity} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import styles from '../styles';
 import {ThemedButton} from './Common';
+import PAGE_NAMES from './Pages/PAGE_NAMES';
 
-const AddWordButton = ({onPress}) => (
-	<View style={styles.verticalButtonGroup}>
-		<View style={styles.themedButton}>
-			<ThemedButton 
-				title="Add new word"
-				onPress={onPress}
-			/>
+const AddWordButton = () => {
+	const navigation = useNavigation();
+	
+	return (
+		<View style={styles.verticalButtonGroup}>
+			<View style={styles.themedButton}>
+				<ThemedButton 
+					title="Add new word"
+					onPress={() => navigation.navigate(PAGE_NAMES.WORD)}
+				/>
+			</View>
 		</View>
-	</View>
-);
+	);
+}
 
-// Displays the modal and pre-fills fields with any values provided
-const EditWordButton = ({item, onPress}) => (
-	<TouchableOpacity
-		title="Edit"
-		onPress={() => onPress(item)}
-	>
-		<Image style={{height: 50, width: 50}} source={require('../../res/edit.png')} />
-	</TouchableOpacity>
-);
+// TODO: figure out how to pass details on word to edit to WordView
+const EditWordButton = ({item}) => { 
+	const navigation = useNavigation();
+
+	return (
+		<TouchableOpacity
+			title="Edit"
+			onPress={() => navigation.navigate(PAGE_NAMES.WORD)}
+		>
+			<Image style={{height: 50, width: 50}} source={require('../../res/edit.png')} />
+		</TouchableOpacity>
+	);
+}
 
 export {
 	AddWordButton,

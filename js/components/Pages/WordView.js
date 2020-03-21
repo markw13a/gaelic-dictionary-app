@@ -1,9 +1,10 @@
 import React, {useState} from "react";
 import {Alert, Button, View} from 'react-native';
 
-import styles from '../styles';
-import {TextInputWithCross, ThemedButton} from './Common';
-import { useDb } from '../db';
+import styles from '../../styles';
+import { useDb } from '../../db';
+import {TextInputWithCross, ThemedButton} from '../Common';
+import { useNavigation } from "@react-navigation/native";
 
 const CHARACTER_CONVERSION_TABLE = {
 	'á': 'a', 
@@ -29,8 +30,10 @@ const CHARACTER_CONVERSION_TABLE = {
 	'Ù': 'U'
 };
 
-const AddWordDialog = ({onDismiss, ...props}) => {
+// TODO: revisit dodgy use of props here. Probably better to use deconstruction syntax
+const WordView = props => {
 	const db = useDb();
+	const navigation = useNavigation();
 	const [gaelic, setGaelic] = useState(props.gaelic);
 	const [english, setEnglish] = useState(props.english);
 
@@ -62,13 +65,13 @@ const AddWordDialog = ({onDismiss, ...props}) => {
 
 							if(props['user_created']) {
 								// Insert new entry before deleting old one
-								// Would rather have double entries than deleting user's data
+								// Would rather have double entries than delete user's data
 								sqlInsertWord({db, english, gaelic, gaelic_no_accents})
 								.then(() => sqlDeleteWord({db, rowid: props.rowid}))
-								.then(onDismiss);
+								.then(() => navigation.goBack());
 							} else {
 								sqlInsertWord({db, english, gaelic, gaelic_no_accents})
-								.then(onDismiss)
+								.then(() => navigation.goBack())
 							}
 						}} 
 					/>
@@ -76,7 +79,7 @@ const AddWordDialog = ({onDismiss, ...props}) => {
 				<View style={styles.themedButton}>
 					<ThemedButton 
 						title="Cancel" 
-						onPress={onDismiss} 
+						onPress={() => navigation.goBack()} 
 					/>
 				</View>
 				{props['user_created'] && (
@@ -85,7 +88,7 @@ const AddWordDialog = ({onDismiss, ...props}) => {
 							title="Delete" 
 							onPress={
 								() => sqlDeleteWord({db, rowid: props.rowid})
-									.then(onDismis)
+									.then(() => navigation.goBack())
 							} 
 							color='red'
 						/>
@@ -96,4 +99,4 @@ const AddWordDialog = ({onDismiss, ...props}) => {
 	);
 };
 
-export default AddWordDialog;
+export {WordView};
