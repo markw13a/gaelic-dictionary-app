@@ -1,9 +1,7 @@
-/**
- * Focusing first on building the interface with dummy data
- * Doing this as both react-native and SQLite are new to me, and react-native seems like it'll be easiest to start with 
- */
+import 'react-native-gesture-handler';
 import React, {useState} from 'react';
 import {View} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
 
 import SavedView from './js/components/Pages/SavedView';
 import SearchView from './js/components/Pages/SearchView';
@@ -16,16 +14,18 @@ const Main = () => {
 	const [activeView, setActiveView] = useState();
 
 	return (
-		<DbProvider>
-			<View style={styles.appContainer}>
-					{
-						activeView === 'saved'
-						? <SavedView />
-						: <SearchView />
-					}
-				<HotBar setActiveView={setActiveView} />
-			</View>
-		</DbProvider>
+		<NavigationContainer>
+			<DbProvider>
+				<View style={styles.appContainer}>
+						{
+							activeView === 'saved'
+							? <SavedView />
+							: <SearchView />
+						}
+					<HotBar setActiveView={setActiveView} />
+				</View>
+			</DbProvider>
+		</NavigationContainer>
 	);
 };
 
