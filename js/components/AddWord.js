@@ -15,10 +15,10 @@ const AddWordButton = ({onPress}) => (
 );
 
 // Displays the modal and pre-fills fields with any values provided
-const EditWordButton = ({onPress}) => (
+const EditWordButton = ({item, onPress}) => (
 	<TouchableOpacity
 		title="Edit"
-		onPress={onPress}
+		onPress={() => onPress(item)}
 	>
 		<Image style={{height: 50, width: 50}} source={require('../../res/edit.png')} />
 	</TouchableOpacity>

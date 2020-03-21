@@ -13,7 +13,7 @@ const CHARACTER_CONVERSION_TABLE = {
 	'É': 'E', 
 	'í': 'i', 
 	'Í': 'I',
-	'ó':'o', 
+	'ó': 'o', 
 	'Ó': 'O', 
 	'ú': 'u', 
 	'Ú': 'U',
@@ -64,11 +64,11 @@ const AddWordDialog = ({onDismiss, ...props}) => {
 								// Used later to allow the user to look up word without typing out correct accents
 								const gaelic_no_accents = gaelic.replace(/[áÁéÉíÍóÓúÚàèìòùÀÈÌÒÙ]/gi, (match) => CHARACTER_CONVERSION_TABLE[match]);
 
-								if(initialValues['user_created']) {
+								if(props['user_created']) {
 									// Insert new entry before deleting old one
 									// Would rather have double entries than deleting user's data
 									sqlInsertWord({db, english, gaelic, gaelic_no_accents})
-									.then(() => sqlDeleteWord({db, rowid: initialValues.rowid}))
+									.then(() => sqlDeleteWord({db, rowid: props.rowid}))
 									.then(onDismiss);
 								} else {
 									sqlInsertWord({db, english, gaelic, gaelic_no_accents})
@@ -83,12 +83,12 @@ const AddWordDialog = ({onDismiss, ...props}) => {
 							onPress={onDismiss} 
 						/>
 					</View>
-					{initialValues['user_created'] && (
+					{props['user_created'] && (
 						<View style={styles.themedButton}>
 							<Button 
 								title="Delete" 
 								onPress={
-									() => sqlDeleteWord({db, rowid: initialValues.rowid})
+									() => sqlDeleteWord({db, rowid: props.rowid})
 										.then(onDismis)
 								} 
 								color='red'

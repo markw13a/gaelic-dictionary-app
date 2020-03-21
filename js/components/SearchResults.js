@@ -5,18 +5,19 @@ import styles, {fontScale} from '../styles';
 import {EditWordButton} from './AddWord';
 import { useDb } from '../db';
 
-const SearchResults = ({items}) => (
+const SearchResults = ({items, editOnPress}) => (
     // TODO: don't use stringify to generate a key!
     // Slow + key will change if item is modified
     // Almost defeats the point of using a key in the first place
     <FlatList 
         data={items}
         keyExtractor={(item) => JSON.stringify(item)}
-        renderItem={({item}) => <Result item={item} />}
+        renderItem={({item}) => <Result item={item} editOnPress={editOnPress} />}
     />
 );
 
-const Result = ({item}) => (
+// TODO: possible to flatten component tree to avoid prop-drilling?
+const Result = ({item, editOnPress}) => (
     <View style={styles.searchResultContainer}>
         <View style={styles.searchResultText}>
             <Text style={{...fontScale.fontMedium, color: '#000000'}}> {item.gaelic} </Text>
@@ -25,7 +26,7 @@ const Result = ({item}) => (
         <View>
             {
                 item["user_created"]
-                ? EditWordButton(item)
+                ? EditWordButton({item, onPress: editOnPress})
                 : FavouriteButton({item})
             }
         </View>

@@ -4,9 +4,9 @@ import {View} from 'react-native';
 import {IconButton} from './Common';
 import {styles, colours} from '../styles'
 
-const HotBar = ({setActiveView}) => (
+const TabBar = () => (
 	<View style={{...styles.buttonGroup, backgroundColor: '#ffffff'}}>
-		<View style={{width: 60, height: 60, borderRadius: 30, backgroundColor: colours.hotBarButtons, alignItems: 'center', justifyContent: 'center'}}>
+		<View style={{width: 60, height: 60, borderRadius: 30, backgroundColor: colours.tabBarButtons, alignItems: 'center', justifyContent: 'center'}}>
 			<IconButton
 				style={{
 					width: 35,
@@ -16,7 +16,7 @@ const HotBar = ({setActiveView}) => (
 				onPress={() => setActiveView('search')}
 			/>
 		</View>
-		<View style={{width: 60, height: 60, borderRadius: 30, backgroundColor: colours.hotBarButtons, alignItems: 'center', justifyContent: 'center'}}>
+		<View style={{width: 60, height: 60, borderRadius: 30, backgroundColor: colours.tabBarButtons, alignItems: 'center', justifyContent: 'center'}}>
 			<IconButton
 				style={{
 					width: 35,
@@ -29,4 +29,4 @@ const HotBar = ({setActiveView}) => (
 	</View>
 );
 
-export default HotBar;
+export default TabBar;

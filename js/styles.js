@@ -6,7 +6,7 @@ const colours = {
 	// Use different colours for buttons that control current view vs buttons that switch views
 	// Helps to emphasise that these are fundamentally different
 	interactables: '#2685AD',
-	hotBarButtons: '#20BA96'
+	tabBarButtons: '#20BA96'
 };
 
 const baseFont = 18;

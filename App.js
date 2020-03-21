@@ -1,32 +1,42 @@
 import 'react-native-gesture-handler';
-import React, {useState} from 'react';
-import {View} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
+import React from 'react';
+import {createBottomTabNavigator} from "@react-navigation/bottom-tabs"
+import {NavigationContainer} from "@react-navigation/native";
 
-import SavedView from './js/components/Pages/SavedView';
-import SearchView from './js/components/Pages/SearchView';
+import {SavedView, SavedViewIcon} from './js/components/Pages/SavedView';
+import {SearchView, SearchViewIcon} from './js/components/Pages/SearchView';
 import {DbProvider} from "./js/db";
-import HotBar from './js/components/HotBar';
-import {styles} from "./js/styles";
+import { colours } from './js/styles';
 
-const Main = () => {
-	// User can switch between searching the dictionary, viewing previous searches and viewing saved words/phrases
-	const [activeView, setActiveView] = useState();
+const Tab = createBottomTabNavigator();
 
-	return (
+const Main = () => (
+	<DbProvider>
 		<NavigationContainer>
-			<DbProvider>
-				<View style={styles.appContainer}>
-						{
-							activeView === 'saved'
-							? <SavedView />
-							: <SearchView />
-						}
-					<HotBar setActiveView={setActiveView} />
-				</View>
-			</DbProvider>
+			<Tab.Navigator 
+				initialRouteName="Search" 
+				tabBarOptions={{
+					activeTintColor: colours.tabBarButtons,
+					showIcon: true
+				}}
+			>
+				<Tab.Screen 
+					name="Search" 
+					component={SearchView}
+					options={{
+						tabBarIcon: SearchViewIcon
+					}} 
+				/>
+				<Tab.Screen 
+					name="Save" 
+					component={SavedView}
+					options={{
+						tabBarIcon: SavedViewIcon
+					}} 
+				/>
+			</Tab.Navigator>
 		</NavigationContainer>
-	);
-};
+	</DbProvider>
+);
 
 export default Main;

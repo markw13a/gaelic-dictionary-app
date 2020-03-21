@@ -1,12 +1,24 @@
 import React, {useEffect, useState, useCallback} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, Image} from 'react-native';
 
+import {colours} from "../../styles";
 import { AddWordButton } from '../AddWord';
 import SearchResults from '../SearchResults';
 import { useDb } from '../../db';
 import LoadingView from './LoadingView';
 import { useToggleModal } from '../../Hooks';
 import AddWordDialog from '../AddWordDialog';
+
+const SavedViewIcon = ({color}) => (
+	<Image
+		source={require('../../../res/save.png')}
+		style={{
+			width: 25,
+			height: 25,
+		}}
+		tintColor={color}
+	/>
+);
 
 const fetchDbItems = ({db, setItems}) => {
 	db.executeSql(
@@ -60,7 +72,7 @@ const SavedView = () => {
 			{
 				(items && items.length === 0)
 				? <View style={{flex:1}}><Text>You haven't favourited any words or phrases yet.</Text></View>
-				: <SearchResults items={items} db={db} />
+				: <SearchResults items={items} />
 			}
 			{
 				isModalVisible
@@ -71,4 +83,7 @@ const SavedView = () => {
 	);
 };
 
-export default SavedView;
+export {
+	SavedView,
+	SavedViewIcon
+}

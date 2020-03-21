@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Text, View} from 'react-native';
+import {Text, Image, View} from 'react-native';
 
 import {fontScale} from '../../styles';
 import { useToggleModal } from '../../Hooks';
@@ -9,6 +9,27 @@ import {TextInputWithCross} from '../Common';
 import { useDb } from '../../db';
 import LoadingView from "./LoadingView";
 import AddWordDialog from '../AddWordDialog';
+
+const editOnPress = item => {
+	setModalItem(item);
+	toggleIsModalVisible();
+};
+
+const addWordOnPress = item => {
+	setModalItem(item);
+	toggleIsModalVisible();
+};
+
+const SearchViewIcon = ({color}) => (
+	<Image
+		source={require('../../../res/search.png')}
+		style={{
+			width: 25,
+			height: 25,
+		}}
+		tintColor={color}
+	/>
+);
 
 const SearchView = () => {
 	const db = useDb();
@@ -75,7 +96,7 @@ const SearchView = () => {
 			}
 			{
 				isModalVisible
-				&& <AddWordDialog gaelic={searchTerm} />
+				&& <AddWordDialog gaelic={searchTerm} onDismiss={toggleIsModalVisible} />
 			}
 		</>
 	);
@@ -87,4 +108,7 @@ const SearchBar = ({searchTerm, setSearchTerm}) => (
 	</View>
 );
 
-export default SearchView;
+export {
+	SearchView,
+	SearchViewIcon
+}
