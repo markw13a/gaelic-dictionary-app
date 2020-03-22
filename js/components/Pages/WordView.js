@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useCallback} from "react";
 import {Alert, Button, View} from 'react-native';
 
 import styles from '../../styles';
@@ -30,25 +30,25 @@ const CHARACTER_CONVERSION_TABLE = {
 	'Ù': 'U'
 };
 
-const WordView = ({route: {params}}) => {
+const WordView = ({route: {params = {}}}) => {
 	const db = useDb();
 	const navigation = useNavigation();
 	const [gaelic, setGaelic] = useState();
 	const [english, setEnglish] = useState();
 
-	console.warn(params)
+	useFocusEffect(
+		useCallback(() => {
+			// Set params when screen is opened
+			setGaelic(params.gaelic);
+			setEnglish(params.english);
 
-	useFocusEffect(() => {
-		// Set params when screen is opened
-		setGaelic(params.gaelic);
-		setEnglish(params.english);
-
-		// Nullify fields when user switches screen
-		return () => {
-			setGaelic();
-			setEnglish();
-		};
-	});
+			// Nullify fields when user switches screen
+			return () => {
+				setGaelic();
+				setEnglish();
+			};
+		}, [setGaelic, setEnglish, params.gaelic, params.english]) 
+	);
 
 	const sqlInsertWord = ({db, gaelic, gaelic_no_accents, english}) => db.executeSql(`INSERT INTO search (gaelic, gaelic_no_accents, english, favourited, user_created) VALUES ("${gaelic}", "${gaelic_no_accents}", "${english}", "${new Date().getTime()}", "1");`, []);
 
