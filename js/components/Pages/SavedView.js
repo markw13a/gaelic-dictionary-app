@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, Image} from 'react-native';
-
-import { AddWordButton } from '../AddWord';
-import SearchResults from '../SearchResults';
-import { useDb } from '../../db';
-import LoadingView from './LoadingView';
+import React, {useState, useCallback} from 'react';
+import {Image} from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
-const SavedViewIcon = ({color}) => (
+import LoadingView from "./LoadingView";
+import { useDb } from '../../db';
+import SearchResults from "../SearchResults";
+import {AddWordButton} from "../AddWord";
+
+const SavedTabBarIcon = ({color}) => (
 	<Image
 		source={require('../../../res/save.png')}
 		style={{
@@ -40,11 +40,15 @@ const SavedView = () => {
 	const db = useDb();
 	const [items, setItems] = useState();
 
-	useFocusEffect(() => {
-		if(!db) return;
-		fetchDbItems({db, setItems});
-	});
-
+	useFocusEffect(
+		useCallback(() => {
+			if(!db) return;
+			fetchDbItems({db, setItems});
+			// Update on blur so user doesn't see results "pop" in to view when they come back to this screen
+			return () => fetchDbItems({db, setItems});
+		}, [])
+	);
+	
 	if(!db) {
 		return <LoadingView />;
 	}
@@ -63,5 +67,5 @@ const SavedView = () => {
 
 export {
 	SavedView,
-	SavedViewIcon
+	SavedTabBarIcon
 }

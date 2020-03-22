@@ -2,5 +2,6 @@ export default {
 	LOADING: "Loading",
 	SAVED: "Saved",
 	SEARCH: "Search",
-	WORD: "Word"
+	ADD_WORD: "AddWord",
+	EDIT_WORD: "EditWord"
 };

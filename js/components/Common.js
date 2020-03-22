@@ -6,15 +6,13 @@ import styles, {colours, fontScale} from '../styles';
  * Wraps image in a clickable area
  * @param {String} source location of image file to use 
  */
-const IconButton = ({source, onPress, style}) => (
+const IconButton = ({source, onPress, title}) => (
 	<TouchableOpacity
+		title={title}
 		onPress={onPress}
-		style={{
-			justifyContent: 'center',
-			flex: 1
-		}}
+		style={styles.favouriteButtonContainer}
 	>
-		<Image style={style} source={source} />
+		<Image style={styles.favouriteButtonImage} source={source} />
 	</TouchableOpacity>
 );
 
@@ -29,25 +27,26 @@ const ThemedButton = (props) => (
 const TextInputWithCross = ({value, setValue, label, ...props}) => (
 	<View style={{
 			flexDirection: 'column',
-			width: '90%', 
-			borderRadius: 20, 
-			marginHorizontal: 5,
-			marginVertical: 5
+			padding: 10
 		}}
 	>
-		{label && <Text style={{...fontScale.fontSmall}}>{label}</Text>}
+		{label && <Text style={{...fontScale.fontMedium}}>{label}</Text>}
 		<View style={{
 				flexDirection: 'row', 
 				backgroundColor: '#ffffff',
+				alignItems: 'center'
 			}}
 		>
 			<TextInput
 				onChangeText={text => setValue(text)}
 				value={value} 
-				style={{...fontScale.fontMedium, borderRadius: 20, flex: 9, height: 80}}
+				style={{...fontScale.fontMedium, borderRadius: 20, flex: 9, padding: 15}}
 				{...props}
 			/>
-			<IconButton style={{width: 25, height: 25}} source={require('../../res/cross.png')} onPress={() => setValue('')} />
+			<IconButton 
+				source={require('../../res/cross.png')} 
+				onPress={() => setValue('')} 
+			/>
 		</View>
 	</View>
 
