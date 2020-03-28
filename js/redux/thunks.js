@@ -16,10 +16,6 @@ const DB_STATES = {
 	READY: "READY",
 	CLOSED: "CLOSED"
 };
-// Fetch db
-// Upgrade db
-// Close db
-// Flags to signal loading/updating?
 const fetchDb = () => dispatch => {
 	dispatch(setDbFlag(DB_STATES.LOADING));
 	return (
@@ -70,9 +66,10 @@ const closeDb = () => (dispatch, getState) => {
 	dispatch(setDbFlag(DB_STATES.CLOSED));
 };
 
-const refreshSearch = db => (dispatch, getState) => {
+const refreshSearch = () => (dispatch, getState) => {
 	const state = getState();
 	const searchTerm = state.search.searchTerm;
+	const db = state.db.db;
 	// TODO: ordering by length of gaelic is a bit dodgy.
 	// Will not give intended effect if user searches for something in English
 	// Sorting by length is a primitive way of ordering by "relevance"
@@ -100,9 +97,9 @@ const refreshSearch = db => (dispatch, getState) => {
 	});
 };
 
-const updateSearchAndRefresh = (searchTerm, db) => dispatch => {
+const updateSearchAndRefresh = (searchTerm) => dispatch => {
 	dispatch(updateSearch(searchTerm));
-	dispatch(refreshSearch(db));
+	dispatch(refreshSearch());
 	dispatch(setWordKey({key: "gaelic", searchTerm}));
 };
 
@@ -163,28 +160,44 @@ const CHARACTER_CONVERSION_TABLE = {
 	'Ò': 'O',
 	'Ù': 'U'
 };
-const saveWord = ({gaelic, english}) => (dispatch, getState) => {
+const insertWord = ({gaelic, english}) => (dispatch, getState) => {
+	const state = getState();
+	const db = state.db.db;
+
+	// Used later to allow the user to look up word without typing out correct accents
+	const gaelic_no_accents = gaelic.replace(/[áÁéÉíÍóÓúÚàèìòùÀÈÌÒÙ]/gi, (match) => CHARACTER_CONVERSION_TABLE[match]);
+
+	return db.executeSql(`INSERT INTO search (gaelic, gaelic_no_accents, english, favourited, user_created) VALUES ("${gaelic}", "${gaelic_no_accents}", "${english}", "${new Date().getTime()}", "1");`, []);
+};
+const deleteWord = rowid => (dispatch, getState) => {
+	const state = getState();
+	const db = state.db.db;
+
+	return db.executeSql(`DELETE FROM search WHERE rowid=${rowid} AND user_created = '1';`, []);
+};
+const saveWord = ({gaelic, english, rowid}) => (dispatch, getState) => {
 	if(!gaelic || !english) {
 		throw new Error(`saveWord undefined variable: gaelic: ${gaelic}, english: ${english}`);
 	}
 	const state = getState();
 	const db = state.db.db;
-	// Used later to allow the user to look up word without typing out correct accents
-	const gaelic_no_accents = gaelic.replace(/[áÁéÉíÍóÓúÚàèìòùÀÈÌÒÙ]/gi, (match) => CHARACTER_CONVERSION_TABLE[match]);
 
 	return (
-		db.executeSql(
-			`INSERT INTO search (gaelic, gaelic_no_accents, english, favourited, user_created) VALUES ("${gaelic}", "${gaelic_no_accents}", "${english}", "${new Date().getTime()}", "1");`, 
-			[]
-		)
-		.then(() => db.executeSql(`DELETE FROM search WHERE rowid=${rowid} AND user_created = '1';`, []))
+		dispatch(deleteWord(rowid))
+		.then(() => dispatch(insertWord({gaelic, english})))
 		.then(() => {
 			dispatch(refreshSearch(db));
 			dispatch(refreshSaved(db));
 		})
 	);
 };
-
+const deleteWordAndRefresh = rowid => (dispatch) => (
+	dispatch(deleteWord(rowid))
+	.then(() => {
+		dispatch(refreshSearch());
+		dispatch(refreshSaved());
+	})
+);
 export {
 	fetchDb,
 	updateSearchAndRefresh,
@@ -193,5 +206,7 @@ export {
 	closeDb,
 	refreshSaved,
 	saveWord,
+	deleteWord,
+	deleteWordAndRefresh,
 	DB_STATES
 };

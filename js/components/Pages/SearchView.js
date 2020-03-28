@@ -43,13 +43,12 @@ const SearchView = () => {
 
 const SearchBar = ({searchTerm}) => {
 	const dispatch = useDispatch();
-	const db = useSelector(state => state.db.db);
 
 	return (
 		<View style={{backgroundColor: '#055577', paddingVertical: '3%'}}>
 			<TextInputWithCross
-				onChange={text => dispatch(updateSearchAndRefresh(text, db))} 
-				onClear={() => dispatch(updateSearchAndRefresh("", db))}
+				onChange={text => dispatch(updateSearchAndRefresh(text))} 
+				onClear={() => dispatch(updateSearchAndRefresh(""))}
 				value={searchTerm} 
 				placeholder="Search..." 
 			/>

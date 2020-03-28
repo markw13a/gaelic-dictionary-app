@@ -1,5 +1,5 @@
 import produce from "immer";
-import { SET_KEY, SET_ITEM, RESET_WORD_STATE } from "../actions";
+import { SET_WORD_KEY, SET_ITEM, RESET_WORD_STATE } from "../actions";
 
 const initialState = {
 	gaelic: "",
@@ -8,7 +8,7 @@ const initialState = {
 };
 const wordReducer = (state=initialState, action) => {
 	switch(action.type) {
-		case SET_KEY: {
+		case SET_WORD_KEY: {
 			return produce(state, nextState => {
 				const {key, value} = action;
 				nextState[key] = value;

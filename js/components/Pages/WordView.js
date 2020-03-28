@@ -1,16 +1,17 @@
-import React, {useState, useCallback} from "react";
+import React from "react";
 import {useSelector, useDispatch} from "react-redux";
 import {Alert, Button, View} from 'react-native';
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
-import {saveWord} from "../../redux/thunks";
+import {setWordKey} from "../../redux/actions";
+import {saveWord, deleteWordAndRefresh} from "../../redux/thunks";
 import styles from '../../styles';
 import {TextInputWithCross, ThemedButton} from '../Common';
 
-const SaveButton = ({gaelic, english, rowid}) => {
-	const db = useSelector(state => state.db.db);
+const SaveButton = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
+	const {gaelic, english, rowid} = useSelector(state => state.word);
 
 	return (
 		<View style={styles.themedButton}>
@@ -21,7 +22,9 @@ const SaveButton = ({gaelic, english, rowid}) => {
 						Alert.alert('Fields must not be blank');
 						return;
 					}
-					dispatch(saveWord({gaelic, english, rowid}));
+					dispatch(saveWord({gaelic, english, rowid}))
+					.catch(err => Alert.alert(`Save failed: ${JSON.stringify(err)}`))
+					.then(() => navigation.goBack());
 				}} 
 			/>
 		</View>
@@ -39,87 +42,54 @@ const CancelButton = () => {
 		</View>
 	);
 };
-const DeleteButton = ({rowid}) => {
-	const db = useSelector(state => state.db.db);
+const DeleteButton = () => {
+	const dispatch = useDispatch();
 	const navigation = useNavigation();
+	const rowid = useSelector(state => state.word.rowid);
+
+	// No rowid indicates that we're creating a new word rather than editing an existing one
+	if(!rowid) return null;
 
 	return (
 		<View style={styles.themedButton}>
 			<Button 
 				title="Delete" 
-				onPress={() => sqlDeleteWord({db, rowid})
-						.then(() => navigation.goBack())
-				} 
+				onPress={() => {
+					dispatch(deleteWordAndRefresh(rowid))
+					.then(() => navigation.goBack());
+				}} 
 				color='red'
 			/>
 		</View>
 	);
 };
 
-// Decided to split AddWord and EditWord in to two screens as they're behaviour when switching to/from the screen is different
-// Was becoming very awkward to handle as one screen with two "special cases"
-const AddWordView = () => {
-	const [gaelic, setGaelic] = useState();
-	const [english, setEnglish] = useState();
-
-	useFocusEffect(
-		useCallback(() => {
-			// Nullify fields when user switches screen
-			return () => {
-				setGaelic("");
-				setEnglish("");
-			};
-		}, [setGaelic, setEnglish]) 
-	);
-
+const WordView = () => {
+	const dispatch = useDispatch();
+	const {gaelic, english} = useSelector(state => state.word);
 	return (
 		<View>
 			<View>
-				<TextInputWithCross value={gaelic} setValue={setGaelic} label="Gaelic" />
-				<TextInputWithCross value={english} setValue={setEnglish} label="English" />
+				<TextInputWithCross 
+					onClear={() => dispatch(setWordKey({key: "gaelic", value: ""}))} 
+					onChange={text => dispatch(setWordKey({key: "gaelic", value: text}))} 
+					label="Gaelic" 
+					value={gaelic} 
+				/>
+				<TextInputWithCross 
+					onClear={() => dispatch(setWordKey({key: "english", value: ""}))} 
+					onChange={text => dispatch(setWordKey({key: "english", value: text}))} 
+					label="English"
+					value={english} 
+				/>
 			</View>
 			<View style={styles.verticalButtonGroup}>
-				<SaveButton gaelic={gaelic} english={english} rowid={params.rowid} />
+				<SaveButton />
 				<CancelButton />
+				<DeleteButton />
 			</View>
 		</View>
 	);
 };
 
-const EditWordView = ({route: {params = {}}}) => {
-	const [gaelic, setGaelic] = useState();
-	const [english, setEnglish] = useState();
-
-	useFocusEffect(
-		useCallback(() => {
-			// Set params when screen is opened
-			setGaelic(params.gaelic);
-			setEnglish(params.english);
-
-			// Nullify fields when user switches screen
-			return () => {
-				setGaelic("");
-				setEnglish("");
-			};
-		}, [setGaelic, setEnglish, params.gaelic, params.english]) 
-	);
-
-	return (
-		<View>
-			<View>
-				<TextInputWithCross value={gaelic} setValue={setGaelic} label="Gaelic" />
-				<TextInputWithCross value={english} setValue={setEnglish} label="English" />
-			</View>
-			<View style={styles.verticalButtonGroup}>
-				<SaveButton gaelic={gaelic} english={english} userCreated={params["user_created"]} rowid={params.rowid} />
-				<CancelButton />
-				<DeleteButton rowid={params.rowid} />
-			</View>
-		</View>
-	);
-};
-
-export {
-	EditWordView, 
-	AddWordView
-};
+export default WordView;

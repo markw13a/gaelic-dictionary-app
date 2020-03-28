@@ -1,6 +1,9 @@
 import React from 'react';	
+import { useDispatch } from 'react-redux';
 import {View} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+
+import {setItem} from "../redux/actions";
 import styles from '../styles';
 import {ThemedButton, IconButton} from './Common';
 import PAGE_NAMES from './Pages/PAGE_NAMES';
@@ -20,13 +23,17 @@ const AddWordButton = () => {
 	);
 }
 
-const EditWordButton = item => { 
+const EditWordButton = item => {
+	const dispatch = useDispatch(); 
 	const navigation = useNavigation();
 
 	return (
 		<IconButton 
 			title="Edit"
-			onPress={() => navigation.navigate(PAGE_NAMES.EDIT_WORD, item)}
+			onPress={() => {
+				dispatch(setItem(item));
+				navigation.navigate(PAGE_NAMES.ADD_WORD);
+			}}
 			source={require('../../res/edit.png')}
 		/>
 	);

@@ -6,7 +6,7 @@ import {NavigationContainer} from "@react-navigation/native";
 
 import {SavedView, SavedTabBarIcon} from './js/components/Pages/SavedView';
 import {SearchView, SearchTabBarIcon} from './js/components/Pages/SearchView';
-import {AddWordView, EditWordView} from './js/components/Pages/WordView';
+import WordView from './js/components/Pages/WordView';
 import store from "./js/redux/store";
 
 import PAGE_NAMES from "./js/components/Pages/PAGE_NAMES";
@@ -59,15 +59,7 @@ const Main = () => (
 					/>
 					<Tab.Screen 
 						name={PAGE_NAMES.ADD_WORD}
-						component={AddWordView}
-						options={{
-							// Don't want this screen to be reachable via the tab bar
-							tabBarButton: () => null
-						}}
-					/>
-					<Tab.Screen 
-						name={PAGE_NAMES.EDIT_WORD}
-						component={EditWordView}
+						component={WordView}
 						options={{
 							// Don't want this screen to be reachable via the tab bar
 							tabBarButton: () => null
