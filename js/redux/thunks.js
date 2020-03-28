@@ -3,6 +3,7 @@ import dbUpgrade from '../dbUpgrade';
 import {
 	updateSearch, 
 	updateSearchResults,
+	updateSavedItems,
 	setDb,
 	setDbFlag
 } from "./actions";
@@ -103,6 +104,22 @@ const updateSearchAndRefresh = (searchTerm, db) => dispatch => {
 	dispatch(refreshSearch(db));
 };
 
+const refreshSaved = () => (dispatch, getState) => {
+	const state = getState();
+	const db = state.db.db;
+
+	db.executeSql("SELECT gaelic, english, favourited, rowid, user_created FROM search WHERE favourited >= 1 ORDER BY CAST(favourited AS INTEGER) DESC;", [])
+	.then(queryResponse => {
+		const rows = queryResponse[0].rows;
+		const processedResults = [];
+
+		for(i=0; i < rows.length; i++) {
+			processedResults.push(rows.item(i));
+		}
+		dispatch(updateSavedItems(processedResults));
+	});
+};
+
 const toggleFavourite = ({rowid, favourited}) => (dispatch, getState) => {
 	const state = getState();
 	const db = state.db.db;
@@ -114,7 +131,12 @@ const toggleFavourite = ({rowid, favourited}) => (dispatch, getState) => {
 		[]
 	)
 	.catch(err => console.error('An error has occured ' + JSON.stringify(err)))
-	.then(() => dispatch(refreshSearch(db)));
+	.then(() => {
+			dispatch(refreshSearch(db));
+			dispatch(refreshSaved(db));
+		}
+	);
+
 };
 
 export {
@@ -123,5 +145,6 @@ export {
 	toggleFavourite,
 	initialiseDb,
 	closeDb,
+	refreshSaved,
 	DB_STATES
 };

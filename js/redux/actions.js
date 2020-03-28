@@ -39,6 +39,12 @@ const setDbFlag = flag => ({
 	flag
 });
 
+const UPDATE_SAVED_ITEMS = "UPDATE_SAVED_ITEMS";
+const updateSavedItems = savedItems => ({
+	type: UPDATE_SAVED_ITEMS,
+	savedItems
+});
+
 export {
 	FAVOURITE_ITEM,
 	favouriteItem,
@@ -53,5 +59,7 @@ export {
 	SET_DB,
 	setDb,
 	SET_DB_FLAG,
-	setDbFlag
+	setDbFlag,
+	UPDATE_SAVED_ITEMS,
+	updateSavedItems
 };
