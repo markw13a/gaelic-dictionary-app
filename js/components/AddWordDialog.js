@@ -1,10 +1,8 @@
 import React, {useState} from "react";
-
+import {useSelector} from "react-redux";
 import {Alert, Button, Modal, View} from 'react-native';
-
 import styles from '../styles';
 import {TextInputWithCross, ThemedButton} from './Common';
-import { useDb } from '../db';
 
 const CHARACTER_CONVERSION_TABLE = {
 	'á': 'a', 
@@ -31,7 +29,7 @@ const CHARACTER_CONVERSION_TABLE = {
 };
 
 const AddWordDialog = ({onDismiss, ...props}) => {
-	const db = useDb();
+	const db = useSelector(state => state.db.db);
 	const [gaelic, setGaelic] = useState(props.gaelic);
 	const [english, setEnglish] = useState(props.english);
 

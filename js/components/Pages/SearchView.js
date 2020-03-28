@@ -1,13 +1,12 @@
-import React, {useState, useCallback} from 'react';
+import React from 'react';
+import {useSelector, useDispatch} from "react-redux";
 import {Text, Image, View} from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
 
-import LoadingView from "./LoadingView";
 import {fontScale} from '../../styles';
 import SearchResults from '../SearchResults';
 import {AddWordButton} from '../AddWord';
 import {TextInputWithCross} from '../Common';
-import { useDb } from '../../db';
+import {updateSearchAndRefresh} from "../../redux/thunks";
 
 const SearchTabBarIcon = ({color}) => (
 	<Image
@@ -21,57 +20,13 @@ const SearchTabBarIcon = ({color}) => (
 );
 
 const SearchView = () => {
-	const db = useDb();
-	const [searchTerm, setSearchTerm] = useState();
-	const [results, setResults] = useState();
-
-	// Retrieve and display results as the user is typing
-	useFocusEffect(
-		useCallback(() => {
-			let mounted = true;
-			if(!db) return;
-
-			// TODO: ordering by length of gaelic is a bit dodgy.
-			// Will not give intended effect if user searches for something in English
-			// Sorting by length is a primitive way of ordering by "relevance"
-			// Guess that shortest result will be most similar to string provided
-			// Seems to work ok
-			db.executeSql(
-				"SELECT "+
-					"gaelic,english,favourited,rowid,user_created, 1 AS sortby, length(gaelic) "+
-				"FROM search "+
-				"WHERE "+
-					"search.gaelic MATCH '"+searchTerm+"' "+
-					"OR search.gaelic_no_accents MATCH '"+searchTerm+"' "+
-					"OR search.english MATCH '"+searchTerm+"'"+
-				"ORDER BY length(gaelic) ASC;",
-			[])
-			.then(queryResponse => {
-				const rows = queryResponse[0].rows;
-				const processedResults = [];
-				// Haven't seen a less silly alternative to processing the results of the query
-				for(i=0; i < rows.length; i++) {
-					processedResults.push(rows.item(i));
-				}
-				// Don't set results if user has already changed searchTerm
-				if(mounted) {
-					setResults(processedResults);
-				}
-			});
-
-			return () => mounted = false;
-		}, [db, searchTerm])
-	);
-
-	if(!db) {
-		return <LoadingView />;
-	}
+	const {searchTerm, searchResults} = useSelector(state => state.search);
 
 	return (
 		<>
-			<SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+			<SearchBar searchTerm={searchTerm} />
 			{
-				results && results.length === 0 && searchTerm
+				searchResults && searchResults.length === 0 && searchTerm
 				? (
 					<View style={{flex:1, alignItems: 'center'}}>
 						<Text style={{...fontScale.fontSmall}}> 
@@ -80,21 +35,27 @@ const SearchView = () => {
 						<AddWordButton />
 					</View>
 				)
-				: <SearchResults items={results} />
+				: <SearchResults items={searchResults} />
 			}
 		</>
 	);
 };
 
-const SearchBar = ({searchTerm, setSearchTerm}) => (
-	<View style={{backgroundColor: '#055577', paddingVertical: '3%'}}>
-		<TextInputWithCross 
-			value={searchTerm} 
-			setValue={setSearchTerm} 
-			placeholder="Search..." 
-		 />
-	</View>
-);
+const SearchBar = ({searchTerm}) => {
+	const dispatch = useDispatch();
+	const db = useSelector(state => state.db.db);
+
+	return (
+		<View style={{backgroundColor: '#055577', paddingVertical: '3%'}}>
+			<TextInputWithCross
+				onChange={text => dispatch(updateSearchAndRefresh(text, db))} 
+				onClear={() => dispatch(updateSearchAndRefresh("", db))}
+				value={searchTerm} 
+				placeholder="Search..." 
+			/>
+		</View>
+	);
+};
 
 export {
 	SearchView,

@@ -1,8 +1,8 @@
 import React, {useState, useCallback} from "react";
+import {useSelector} from "react-redux";
 import {Alert, Button, View} from 'react-native';
 
 import styles from '../../styles';
-import { useDb } from '../../db';
 import {TextInputWithCross, ThemedButton} from '../Common';
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
@@ -35,7 +35,7 @@ const sqlInsertWord = ({db, gaelic, gaelic_no_accents, english}) => db.executeSq
 const sqlDeleteWord = ({db, rowid}) => db.executeSql(`DELETE FROM search WHERE rowid=${rowid} AND user_created = '1';`, []);
 
 const SaveButton = ({gaelic, english, rowid, userCreated}) => {
-	const db = useDb();
+	const db = useSelector(state => state.db.db);
 	const navigation = useNavigation();
 
 	return (
@@ -81,7 +81,7 @@ const CancelButton = () => {
 	);
 };
 const DeleteButton = ({rowid}) => {
-	const db = useDb();
+	const db = useSelector(state => state.db.db);
 	const navigation = useNavigation();
 
 	return (

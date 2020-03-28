@@ -20,11 +20,9 @@ const IconButton = ({source, onPress, title}) => (
  * Thin wrapper for Button component with app's colours already set in place
  * Having some trouble adjusting from CSS to React-Native's pseudo-CSS, not sure if this is the most effective way to manage things
  */
-const ThemedButton = (props) => (
-	<Button {...props} color={colours.interactables} />
-);
+const ThemedButton = props => <Button {...props} color={colours.interactables} />;
 
-const TextInputWithCross = ({value, setValue, label, ...props}) => (
+const TextInputWithCross = ({value, onChange, onClear, label, ...props}) => (
 	<View style={{
 			flexDirection: 'column',
 			padding: 10
@@ -38,14 +36,14 @@ const TextInputWithCross = ({value, setValue, label, ...props}) => (
 			}}
 		>
 			<TextInput
-				onChangeText={text => setValue(text)}
+				onChangeText={onChange}
 				value={value} 
 				style={{...fontScale.fontMedium, borderRadius: 20, flex: 9, padding: 15}}
 				{...props}
 			/>
 			<IconButton 
 				source={require('../../res/cross.png')} 
-				onPress={() => setValue('')} 
+				onPress={onClear} 
 			/>
 		</View>
 	</View>

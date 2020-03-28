@@ -3,10 +3,10 @@ import {View, Text} from 'react-native';
 import styles, {fontScale} from '../../../js/styles';
 
 // TODO: implement a proper loading view
-const LoadingView = () => (
+const LoadingView = ({message="Loading..."}) => (
 	<View style={styles.appContainer}>
 		<Text style={fontScale.fontLarge} > 
-			Initialising database... 
+			{message}
 		</Text>
 	</View>
 );

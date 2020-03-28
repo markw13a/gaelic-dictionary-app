@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {FlatList, Text, View} from 'react-native';
 
 import styles, {fontScale} from '../styles';
 import {EditWordButton} from './AddWord';
-import { useDb } from '../db';
 import { IconButton } from './Common';
+import { toggleFavourite } from '../redux/thunks';
 
 const SearchResults = ({items}) => (
     <FlatList 
@@ -31,29 +32,14 @@ const Result = ({gaelic, english, favourited, rowid, "user_created": userCreated
 );
 
 const FavouriteButton = ({favourited, rowid}) => {
-    const db = useDb();
-    // Use state to immediately show effects of favourite/unfavourite without having to refresh data from database
-    const [localFavourited, setLocalFavourited] = useState(favourited);
-    
+    const dispatch = useDispatch();
+
     return (
         <IconButton 
             title="Favourite"
-            onPress={() => {
-                // Toggle value of favourited
-                db.executeSql(
-                    "UPDATE search " + 
-                    "SET favourited = " + (localFavourited === 0 ? new Date().getTime() : 0) + 
-                    " WHERE rowid = " + rowid + ";", 
-                    []
-                )
-                .catch(err => console.error('An error has occured ' + JSON.stringify(err)))
-                .then(() => {
-                    // Update local copy so that user sees feedback
-                    setLocalFavourited(localFavourited === 0 ? new Date().getTime() : 0); 
-                });
-            }}
+            onPress={() => dispatch(toggleFavourite({rowid, favourited}))}
             source={
-                localFavourited 
+                favourited 
                 ? require('../../res/star-solid.png')
                 : require('../../res/star-regular.png')
             }

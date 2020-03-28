@@ -1,9 +1,9 @@
 import React, {useState, useCallback} from 'react';
+import {useSelector} from "react-redux";
 import {Image} from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 
 import LoadingView from "./LoadingView";
-import { useDb } from '../../db';
 import SearchResults from "../SearchResults";
 import {AddWordButton} from "../AddWord";
 
@@ -37,7 +37,7 @@ const fetchDbItems = ({db, setItems}) => {
  * Displays all words favourited or created by the user
  */
 const SavedView = () => {
-	const db = useDb();
+	const db = useSelector(state => state.db.db);
 	const [items, setItems] = useState();
 
 	useFocusEffect(
