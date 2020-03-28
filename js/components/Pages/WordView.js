@@ -1,41 +1,15 @@
 import React, {useState, useCallback} from "react";
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import {Alert, Button, View} from 'react-native';
-
-import styles from '../../styles';
-import {TextInputWithCross, ThemedButton} from '../Common';
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
-const CHARACTER_CONVERSION_TABLE = {
-	'á': 'a', 
-	'Á': 'A', 
-	'é': 'e', 
-	'É': 'E', 
-	'í': 'i', 
-	'Í': 'I',
-	'ó': 'o', 
-	'Ó': 'O', 
-	'ú': 'u', 
-	'Ú': 'U',
+import {saveWord} from "../../redux/thunks";
+import styles from '../../styles';
+import {TextInputWithCross, ThemedButton} from '../Common';
 
-	'à': 'a',
-	'è': 'e',
-	'ì': 'i',
-	'ò': 'o',
-	'ù': 'u',
-	'À': 'A',
-	'È': 'E',
-	'Ì': 'I',
-	'Ò': 'O',
-	'Ù': 'U'
-};
-
-const sqlInsertWord = ({db, gaelic, gaelic_no_accents, english}) => db.executeSql(`INSERT INTO search (gaelic, gaelic_no_accents, english, favourited, user_created) VALUES ("${gaelic}", "${gaelic_no_accents}", "${english}", "${new Date().getTime()}", "1");`, []);
-// TODO: Use something like an upsert instead?
-const sqlDeleteWord = ({db, rowid}) => db.executeSql(`DELETE FROM search WHERE rowid=${rowid} AND user_created = '1';`, []);
-
-const SaveButton = ({gaelic, english, rowid, userCreated}) => {
+const SaveButton = ({gaelic, english, rowid}) => {
 	const db = useSelector(state => state.db.db);
+	const dispatch = useDispatch();
 	const navigation = useNavigation();
 
 	return (
@@ -47,22 +21,7 @@ const SaveButton = ({gaelic, english, rowid, userCreated}) => {
 						Alert.alert('Fields must not be blank');
 						return;
 					}
-					
-					if(!db) return;
-
-					// Used later to allow the user to look up word without typing out correct accents
-					const gaelic_no_accents = gaelic.replace(/[áÁéÉíÍóÓúÚàèìòùÀÈÌÒÙ]/gi, (match) => CHARACTER_CONVERSION_TABLE[match]);
-
-					if(userCreated) {
-						// Insert new entry before deleting old one
-						// Would rather have double entries than delete user's data
-						sqlInsertWord({db, english, gaelic, gaelic_no_accents})
-						.then(() => sqlDeleteWord({db, rowid}))
-						.then(() => navigation.goBack());
-					} else {
-						sqlInsertWord({db, english, gaelic, gaelic_no_accents})
-						.then(() => navigation.goBack())
-					}
+					dispatch(saveWord({gaelic, english, rowid}));
 				}} 
 			/>
 		</View>

@@ -45,6 +45,26 @@ const updateSavedItems = savedItems => ({
 	savedItems
 });
 
+const SET_WORD_KEY = "SET_WORD_KEY";
+const setWordKey = ({key, value}) => ({
+	type: SET_WORD_KEY,
+	key,
+	value
+});
+
+const RESET_WORD_STATE = "RESET_WORD_STATE";
+const resetWordState = () => ({
+	type: RESET_WORD_STATE
+});
+
+const SET_ITEM = "SET_ITEM";
+const setItem = ({gaelic, english, rowid}) => ({
+	type: SET_ITEM,
+	gaelic,
+	english,
+	rowid
+});
+
 export {
 	FAVOURITE_ITEM,
 	favouriteItem,
@@ -61,5 +81,11 @@ export {
 	SET_DB_FLAG,
 	setDbFlag,
 	UPDATE_SAVED_ITEMS,
-	updateSavedItems
+	updateSavedItems,
+	SET_WORD_KEY,
+	setWordKey,
+	RESET_WORD_STATE,
+	resetWordState,
+	SET_ITEM,
+	setItem
 };

@@ -5,7 +5,8 @@ import {
 	updateSearchResults,
 	updateSavedItems,
 	setDb,
-	setDbFlag
+	setDbFlag,
+	setWordKey
 } from "./actions";
 SQLite.enablePromise(true);
 
@@ -102,6 +103,7 @@ const refreshSearch = db => (dispatch, getState) => {
 const updateSearchAndRefresh = (searchTerm, db) => dispatch => {
 	dispatch(updateSearch(searchTerm));
 	dispatch(refreshSearch(db));
+	dispatch(setWordKey({key: "gaelic", searchTerm}));
 };
 
 const refreshSaved = () => (dispatch, getState) => {
@@ -136,7 +138,51 @@ const toggleFavourite = ({rowid, favourited}) => (dispatch, getState) => {
 			dispatch(refreshSaved(db));
 		}
 	);
+};
 
+const CHARACTER_CONVERSION_TABLE = {
+	'á': 'a', 
+	'Á': 'A', 
+	'é': 'e', 
+	'É': 'E', 
+	'í': 'i', 
+	'Í': 'I',
+	'ó': 'o', 
+	'Ó': 'O', 
+	'ú': 'u', 
+	'Ú': 'U',
+
+	'à': 'a',
+	'è': 'e',
+	'ì': 'i',
+	'ò': 'o',
+	'ù': 'u',
+	'À': 'A',
+	'È': 'E',
+	'Ì': 'I',
+	'Ò': 'O',
+	'Ù': 'U'
+};
+const saveWord = ({gaelic, english}) => (dispatch, getState) => {
+	if(!gaelic || !english) {
+		throw new Error(`saveWord undefined variable: gaelic: ${gaelic}, english: ${english}`);
+	}
+	const state = getState();
+	const db = state.db.db;
+	// Used later to allow the user to look up word without typing out correct accents
+	const gaelic_no_accents = gaelic.replace(/[áÁéÉíÍóÓúÚàèìòùÀÈÌÒÙ]/gi, (match) => CHARACTER_CONVERSION_TABLE[match]);
+
+	return (
+		db.executeSql(
+			`INSERT INTO search (gaelic, gaelic_no_accents, english, favourited, user_created) VALUES ("${gaelic}", "${gaelic_no_accents}", "${english}", "${new Date().getTime()}", "1");`, 
+			[]
+		)
+		.then(() => db.executeSql(`DELETE FROM search WHERE rowid=${rowid} AND user_created = '1';`, []))
+		.then(() => {
+			dispatch(refreshSearch(db));
+			dispatch(refreshSaved(db));
+		})
+	);
 };
 
 export {
@@ -146,5 +192,6 @@ export {
 	initialiseDb,
 	closeDb,
 	refreshSaved,
+	saveWord,
 	DB_STATES
 };
