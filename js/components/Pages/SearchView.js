@@ -7,6 +7,7 @@ import SearchResults from '../SearchResults';
 import {AddWordButton} from '../AddWord';
 import {TextInputWithCross} from '../Common';
 import {updateSearchAndRefresh} from "../../redux/thunks";
+import {setWordKey} from "../../redux/actions";
 
 const SearchTabBarIcon = ({color}) => (
 	<Image
@@ -20,6 +21,7 @@ const SearchTabBarIcon = ({color}) => (
 );
 
 const SearchView = () => {
+	const dispatch = useDispatch();
 	const {searchTerm, searchResults} = useSelector(state => state.search);
 	return (
 		<>
@@ -31,7 +33,7 @@ const SearchView = () => {
 						<Text style={{...fontScale.fontSmall}}> 
 							No results. Click below to add this word to your saved searches 
 						</Text>
-						<AddWordButton />
+						<AddWordButton onPress={() => dispatch(setWordKey({key: "gaelic", value: searchTerm}))} />
 					</View>
 				)
 				: <SearchResults items={searchResults} />

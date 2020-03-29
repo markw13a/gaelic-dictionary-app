@@ -8,7 +8,7 @@ import styles from '../styles';
 import {ThemedButton, IconButton} from './Common';
 import PAGE_NAMES from './Pages/PAGE_NAMES';
 
-const AddWordButton = () => {
+const AddWordButton = ({onPress}) => {
 	const navigation = useNavigation();
 	
 	return (
@@ -16,7 +16,10 @@ const AddWordButton = () => {
 			<View style={styles.themedButton}>
 				<ThemedButton 
 					title="Add new word"
-					onPress={() => navigation.navigate(PAGE_NAMES.ADD_WORD)}
+					onPress={() => {
+						navigation.navigate(PAGE_NAMES.ADD_WORD);
+						onPress && onPress();
+					}}
 				/>
 			</View>
 		</View>

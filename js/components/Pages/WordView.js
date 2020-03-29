@@ -3,7 +3,7 @@ import {useSelector, useDispatch} from "react-redux";
 import {Alert, Button, View} from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 
-import {setWordKey} from "../../redux/actions";
+import {setWordKey, resetWordState} from "../../redux/actions";
 import {saveWord, deleteWordAndRefresh} from "../../redux/thunks";
 import styles from '../../styles';
 import {TextInputWithCross, ThemedButton} from '../Common';
@@ -23,21 +23,28 @@ const SaveButton = () => {
 						return;
 					}
 					dispatch(saveWord({gaelic, english, rowid}))
-					.catch(err => Alert.alert(`Save failed: ${JSON.stringify(err)}`))
-					.then(() => navigation.goBack());
+					// .catch(err => Alert.alert(`Save failed: ${JSON.stringify(err)}`))
+					.then(() => {
+						dispatch(resetWordState());
+						navigation.goBack();
+					});
 				}} 
 			/>
 		</View>
 	);
 };
 const CancelButton = () => {
+	const dispatch = useDispatch();
 	const navigation = useNavigation();
 
 	return (
 		<View style={styles.themedButton}>
 			<ThemedButton 
 				title="Cancel" 
-				onPress={() => navigation.goBack()} 
+				onPress={() => {
+					dispatch(resetWordState());
+					navigation.goBack();
+				}} 
 			/>
 		</View>
 	);
@@ -56,7 +63,10 @@ const DeleteButton = () => {
 				title="Delete" 
 				onPress={() => {
 					dispatch(deleteWordAndRefresh(rowid))
-					.then(() => navigation.goBack());
+					.then(() => {
+						dispatch(resetWordState());
+						navigation.goBack();
+					});
 				}} 
 				color='red'
 			/>
