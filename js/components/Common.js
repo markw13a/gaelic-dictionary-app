@@ -38,7 +38,7 @@ const TextInputWithCross = ({value, onChange, onClear, label, ...props}) => (
 			<TextInput
 				onChangeText={onChange}
 				value={value} 
-				style={{...fontScale.fontMedium, borderRadius: 20, flex: 9, padding: 15}}
+				style={{...fontScale.fontMedium, borderRadius: 20, flex: 9, padding: 15, minHeight: 60}}
 				{...props}
 			/>
 			<IconButton 
