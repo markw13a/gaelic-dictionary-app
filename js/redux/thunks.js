@@ -82,8 +82,9 @@ const refreshSearch = () => (dispatch, getState) => {
 		"WHERE "+
 			"search.gaelic MATCH '"+searchTerm+"' "+
 			"OR search.gaelic_no_accents MATCH '"+searchTerm+"' "+
-			"OR search.english MATCH '"+searchTerm+"'"+
-		"ORDER BY length(gaelic) ASC;",
+			"OR search.english MATCH '"+searchTerm+"' "+
+		"ORDER BY length(gaelic) ASC "+
+		"LIMIT 50;",
 	[])
 	.catch(err => console.warn(JSON.stringify(err)))
 	.then(queryResponse => {
@@ -129,12 +130,9 @@ const toggleFavourite = ({rowid, favourited}) => (dispatch, getState) => {
 		" WHERE rowid = " + rowid + ";", 
 		[]
 	)
-	.catch(err => console.error('An error has occured ' + JSON.stringify(err)))
-	.then(() => {
-			dispatch(refreshSearch(db));
-			dispatch(refreshSaved(db));
-		}
-	);
+	.catch(err => console.error('An error has occured ' + JSON.stringify(err)));
+	dispatch(refreshSearch(db));
+	dispatch(refreshSaved(db));
 };
 
 const CHARACTER_CONVERSION_TABLE = {

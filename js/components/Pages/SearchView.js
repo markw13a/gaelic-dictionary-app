@@ -21,7 +21,6 @@ const SearchTabBarIcon = ({color}) => (
 
 const SearchView = () => {
 	const {searchTerm, searchResults} = useSelector(state => state.search);
-
 	return (
 		<>
 			<SearchBar searchTerm={searchTerm} />
