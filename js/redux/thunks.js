@@ -27,7 +27,6 @@ const doUpgradeDb = db => (
 	db.executeSql("SELECT MAX(version) FROM Version;", [])
 	.then(res => {
 		const version = Object.values(res[0].rows.item(0))[0];
-		console.warn({version, targetVersion: dbUpgrade.targetVersion})
 		if( version == dbUpgrade.targetVersion ) return;
 		const upgradeVersion = version + 1;
 			
