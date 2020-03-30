@@ -1,21 +1,18 @@
 import React from 'react';
-import {Button, Image, TextInput, TouchableOpacity, View} from 'react-native';
-
-import styles, {colours} from '../styles';
+import {Button, Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import styles, {colours, fontScale} from '../styles';
 
 /**
  * Wraps image in a clickable area
  * @param {String} source location of image file to use 
  */
-const IconButton = ({source, onPress, style}) => (
+const IconButton = ({source, onPress, title}) => (
 	<TouchableOpacity
+		title={title}
 		onPress={onPress}
-		style={{
-			justifyContent: 'center',
-			flex: 1
-		}}
+		style={styles.favouriteButtonContainer}
 	>
-		<Image style={style} source={source} />
+		<Image style={styles.favouriteButtonImage} source={source} />
 	</TouchableOpacity>
 );
 
@@ -23,27 +20,34 @@ const IconButton = ({source, onPress, style}) => (
  * Thin wrapper for Button component with app's colours already set in place
  * Having some trouble adjusting from CSS to React-Native's pseudo-CSS, not sure if this is the most effective way to manage things
  */
-const ThemedButton = (props) => (
-	<Button {...props} color={colours.interactables} />
-);
+const ThemedButton = props => <Button {...props} color={colours.interactables} />;
 
-const TextInputWithCross = ({value, setValue, ...props}) => (
+const TextInputWithCross = ({value, onChange, onClear, label, ...props}) => (
 	<View style={{
-			flexDirection: 'row', 
-			width: '90%', 
-			borderRadius: 20, 
-			backgroundColor: '#ffffff',
-			marginHorizontal: '5%', 
+			flexDirection: 'column',
+			padding: 10
 		}}
 	>
-		<TextInput
-			onChangeText={text => setValue(text)}
-			value={value} 
-			style={{...styles.textInput, borderRadius: 20, flex: 9, height: 80}}
-			{...props}
-		/>
-		<IconButton style={{width: 30, height: 30}} source={require('../../res/cross.png')} onPress={() => setValue('')} />
+		{label && <Text style={{...fontScale.fontMedium}}>{label}</Text>}
+		<View style={{
+				flexDirection: 'row', 
+				backgroundColor: '#ffffff',
+				alignItems: 'center'
+			}}
+		>
+			<TextInput
+				onChangeText={onChange}
+				value={value} 
+				style={{...fontScale.fontMedium, borderRadius: 20, flex: 9, padding: 15, minHeight: 60}}
+				{...props}
+			/>
+			<IconButton 
+				source={require('../../res/cross.png')} 
+				onPress={onClear} 
+			/>
+		</View>
 	</View>
+
 );
 
 export {

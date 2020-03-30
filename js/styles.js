@@ -6,7 +6,7 @@ const colours = {
 	// Use different colours for buttons that control current view vs buttons that switch views
 	// Helps to emphasise that these are fundamentally different
 	interactables: '#2685AD',
-	hotBarButtons: '#20BA96'
+	tabBarButtons: '#20BA96'
 };
 
 const baseFont = 18;
@@ -62,9 +62,6 @@ const styles = StyleSheet.create({
 		marginVertical: "4%",
 		width: '60%'
 	},
-	textInput: {
-		...fontScale.fontLarge,
-	},
 	favouriteButtonContainer: {
 		height: 50,
 		width: 50,
@@ -75,8 +72,8 @@ const styles = StyleSheet.create({
 		backgroundColor: colours.interactables
 	},
 	favouriteButtonImage: {
-		height: 40,
-		width: 40
+		height: 30,
+		width: 30
 	}
 });
 
