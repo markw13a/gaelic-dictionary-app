@@ -31,16 +31,6 @@ const styles = StyleSheet.create({
 		height: '100%',
 		backgroundColor: colours.background
 	},
-	searchResultContainer: {
-		flexDirection: 'row',
-		width: '100%',
-		marginVertical: '5%'
-	},
-	searchResultText: {
-		flexDirection: 'column',
-		width: '85%',
-		color: colours.text
-	},
 	buttonGroup: {
 		flexDirection: 'row',
 		width: '100%',
@@ -63,17 +53,17 @@ const styles = StyleSheet.create({
 		width: '60%'
 	},
 	favouriteButtonContainer: {
-		height: 50,
-		width: 50,
-		borderRadius: 25,
+		height: 45,
+		width: 45,
+		borderRadius: 22.5,
 		
 		alignItems: 'center',
 		justifyContent: 'center',
 		backgroundColor: colours.interactables
 	},
 	favouriteButtonImage: {
-		height: 30,
-		width: 30
+		height: 27,
+		width: 27
 	}
 });
 
