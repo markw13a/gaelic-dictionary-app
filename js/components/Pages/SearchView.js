@@ -2,7 +2,7 @@ import React from 'react';
 import {useSelector, useDispatch} from "react-redux";
 import {Text, Image, View} from 'react-native';
 
-import {fontScale} from '../../styles';
+import {fontScale, colours} from '../../styles';
 import SearchResults from '../SearchResults';
 import {AddWordButton} from '../AddWord';
 import {TextInputWithCross} from '../Common';
@@ -29,7 +29,7 @@ const SearchView = () => {
 			{
 				searchResults && searchResults.length === 0 && searchTerm
 				? (
-					<View style={{flex:1, alignItems: 'center'}}>
+					<View style={{flex:1, alignItems: 'center', backgroundColor: colours.background, padding: 15}}>
 						<Text style={{...fontScale.fontSmall}}> 
 							No results. Click below to add this word to your saved searches 
 						</Text>

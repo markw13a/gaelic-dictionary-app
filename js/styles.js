@@ -1,7 +1,7 @@
 import {StyleSheet} from 'react-native';
 
 const colours = {
-	background: '#f3f3f3',
+	background: '#effbff',
 	text: '#000000',
 	// Use different colours for buttons that control current view vs buttons that switch views
 	// Helps to emphasise that these are fundamentally different
@@ -50,7 +50,8 @@ const styles = StyleSheet.create({
 	},
 	themedButton: {
 		marginVertical: "4%",
-		width: '60%'
+		width: '60%',
+		backgroundColor: colours.background
 	},
 	favouriteButtonContainer: {
 		height: 45,

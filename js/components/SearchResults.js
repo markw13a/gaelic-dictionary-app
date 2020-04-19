@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import { useDispatch } from 'react-redux';
 import { FlatList, Text, View, StyleSheet } from 'react-native';
 
@@ -8,11 +8,18 @@ import { IconButton } from './Common';
 import { toggleFavourite } from '../redux/thunks';
 
 const resultStyles = StyleSheet.create({
-    searchResultContainer: {
+    searchResultContainerOdd: {
 		flexDirection: 'row',
 		width: '100%',
-        marginVertical: '5%',
-        paddingHorizontal: 15
+        padding: 15,
+        backgroundColor: colours.background
+    },
+    searchResultContainerEven: {
+		flexDirection: 'row',
+		width: '100%',
+        paddingVertical: 15,
+        paddingHorizontal: 15,
+        backgroundColor: '#ffffff'
     },
     searchResultTextHeader: {
         flexDirection: 'row'
@@ -52,33 +59,34 @@ const ResultHeader = ({gaelic, ipa}) => (
     </View>
 );
 
-class Result extends React.PureComponent {
-    render() {
-        const {gaelic, english, favourited, rowid, ipa, "user_created": isUserCreated} = this.props;
-
-        return (
-            <View style={resultStyles.searchResultContainer}>
-                <View style={resultStyles.searchResultText}>
-                    <ResultHeader gaelic={gaelic} ipa={ipa} />
-                    <Text style={resultStyles.searchResultEnglish}>{english}</Text>
-                </View>
-                <View style={resultStyles.favouriteButton}>
-                    {
-                        isUserCreated
-                        ? <EditWordButton gaelic={gaelic} english={english} favourited={favourited} rowid={rowid} isUserCreated={isUserCreated} />
-                        : <FavouriteButton favourited={favourited} rowid={rowid} />
-                    }
-                </View>
+const Result = memo(
+    ({gaelic, english, favourited, rowid, ipa, "user_created": isUserCreated, index}) => (
+        <View style={
+                index%2 
+                ? resultStyles.searchResultContainerOdd
+                : resultStyles.searchResultContainerEven
+            }>
+            <View style={resultStyles.searchResultText}>
+                <ResultHeader gaelic={gaelic} ipa={ipa} />
+                <Text style={resultStyles.searchResultEnglish}>{english}</Text>
             </View>
-        );
-    }
-};
+            <View style={resultStyles.favouriteButton}>
+                {
+                    isUserCreated
+                    ? <EditWordButton gaelic={gaelic} english={english} favourited={favourited} rowid={rowid} isUserCreated={isUserCreated} />
+                    : <FavouriteButton favourited={favourited} rowid={rowid} />
+                }
+            </View>
+        </View>
+    )
+);
 
 const SearchResults = ({items}) => (
     <FlatList 
         data={items}
         keyExtractor={item => "" + item.rowid}
-        renderItem={({item}) => <Result {...item} />}
+        renderItem={({item, index}) => <Result {...item} index={index} />}
+        style={{backgroundColor: items.length%2 ? colours.background : '#ffffff'}}
     />
 );
 

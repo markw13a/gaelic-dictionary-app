@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import {setWordKey, resetWordState} from "../../redux/actions";
 import {saveWord, deleteWordAndRefresh} from "../../redux/thunks";
-import styles from '../../styles';
+import styles, {colours} from '../../styles';
 import {TextInputWithCross, ThemedButton} from '../Common';
 
 const SaveButton = () => {

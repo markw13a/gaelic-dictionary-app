@@ -4,7 +4,7 @@ import {View} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import {setItem} from "../redux/actions";
-import styles from '../styles';
+import styles, { colours } from '../styles';
 import {ThemedButton, IconButton} from './Common';
 import PAGE_NAMES from './Pages/PAGE_NAMES';
 
@@ -12,7 +12,7 @@ const AddWordButton = ({onPress}) => {
 	const navigation = useNavigation();
 	
 	return (
-		<View style={styles.verticalButtonGroup}>
+		<View style={{...styles.verticalButtonGroup, backgroundColor: colours.background}}>
 			<View style={styles.themedButton}>
 				<ThemedButton 
 					title="Add new word"
