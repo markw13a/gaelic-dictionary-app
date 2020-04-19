@@ -77,7 +77,7 @@ const refreshSearch = () => (dispatch, getState) => {
 	// Seems to work ok
 	db.executeSql(
 		"SELECT "+
-			"gaelic,english,favourited,rowid,user_created, 1 AS sortby, length(gaelic) "+
+			"gaelic,english,favourited,rowid,user_created,ipa, 1 AS sortby, length(gaelic) "+
 		"FROM search "+
 		"WHERE "+
 			"search.gaelic MATCH '"+searchTerm+"' "+
@@ -108,7 +108,7 @@ const refreshSaved = () => (dispatch, getState) => {
 	const state = getState();
 	const db = state.db.db;
 
-	db.executeSql("SELECT gaelic, english, favourited, rowid, user_created FROM search WHERE favourited >= 1 ORDER BY CAST(favourited AS INTEGER) DESC;", [])
+	db.executeSql("SELECT gaelic, english, favourited, rowid, ipa, user_created FROM search WHERE favourited >= 1 ORDER BY CAST(favourited AS INTEGER) DESC;", [])
 	.then(queryResponse => {
 		const rows = queryResponse[0].rows;
 		const processedResults = [];
