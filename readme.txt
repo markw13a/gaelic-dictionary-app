@@ -1,10 +1,15 @@
 TODO:
-1) Add ability to change between views by swiping left or right 
 
-2) Seek out more complete primary dictionary database
+1) Fix issue with phoenetic text sometimes occupying too much vertical space (suggest having it sit on its own line instead)
 
-3) Reduce tech debt around styles
+2) Clean underlying DB data
+  -> Remove HTML artifacts (<i></i> tags and others)
+  -> Change how English definitions are stored. Would rather this were returned as an array rather than a single string
+  
+3) Change fuzzy matching algorithm. Full-text search generally means that you have to type out a full work before getting the definition. Also has trouble with hyphenated words (quite a big issue for a Gaelic dictionary).
 
-4) Create nicer icon
+4) Add ability to change between views by swiping left or right 
 
-5) Investigate issue where card text containing " cannot be saved. Likely just need to escape character.
+5) Reduce tech debt around styles
+
+6) Create nicer icon
