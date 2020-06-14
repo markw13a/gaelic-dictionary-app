@@ -1,4 +1,4 @@
-import React, {memo} from 'react';
+import React, { memo, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { FlatList, Text, View, StyleSheet } from 'react-native';
 
@@ -30,6 +30,7 @@ const resultStyles = StyleSheet.create({
     },
     searchResultEnglish: {
         color: '#000000',
+        paddingVertical: 5,
         ...fontScale.fontMedium
     },
     searchResultIPA: {
@@ -47,6 +48,54 @@ const resultStyles = StyleSheet.create({
         alignSelf: "center"
     }
 });
+const Gaelic = ({ gaelic }) => (
+    <View style={resultStyles.searchResultTextHeader}>
+        <Text style={resultStyles.searchResultGaelic}>
+            {gaelic}
+        </Text>
+    </View>
+);
+const English = ({ english }) => {
+    // Split the results string in to an array if multiple definitions are returned
+    // TODO: might be best to look at a way to handle this on the DB-side in future
+    // This is a quick way of achieving the desired result for now
+    const definitions = useMemo(() => {
+        const entries = english.split(/[0-9]([^0-9]*)/g);
+
+        // String is not in the form of a numbered list
+        // No processing required
+        if(!entries) {
+            return [ english ];
+        }
+
+        return entries.reduce((out, entry) => {
+            // Remove blank entries
+            if(!entry) {
+                return out;
+            }
+            // Remove trailing spaces
+            out.push(entry.trim());
+            return out;
+        }, []);
+    }, [english]);
+
+    return (
+        <View>
+            {
+                definitions.length === 1
+                ? <Text style={resultStyles.searchResultEnglish}>{ definitions[0] }</Text>
+                : (
+                    definitions.map((definition, index) => (
+                        <Text style={resultStyles.searchResultEnglish} key={definition}>
+                            { `${index + 1}. ${definition}` }
+                        </Text>
+                    ))
+                )
+            }
+        </View>
+    );
+};
+const IPA = ({ ipa }) => ipa ? <Text style={resultStyles.searchResultIPA}>{ipa}</Text> : null;
 
 const Result = memo(
     ({gaelic, english, favourited, rowid, ipa, "user_created": isUserCreated, index}) => (
@@ -56,11 +105,9 @@ const Result = memo(
                 : resultStyles.searchResultContainerEven
             }>
             <View style={resultStyles.searchResultText}>
-                <View style={resultStyles.searchResultTextHeader}>
-                    <Text style={resultStyles.searchResultGaelic}>{gaelic}</Text>
-                </View>
-                <Text style={resultStyles.searchResultIPA}>{ipa}</Text>
-                <Text style={resultStyles.searchResultEnglish}>{english}</Text>
+                <Gaelic gaelic={gaelic} />
+                <IPA ipa={ipa} />
+                <English english={english} />
             </View>
             <View style={resultStyles.favouriteButton}>
                 {
