@@ -35,10 +35,6 @@ const resultStyles = StyleSheet.create({
     searchResultIPA: {
         color: '#000000',
         flex: 1,
-        alignSelf: "flex-end",
-        // Correct fonts sitting at different vertical heights. Annoying bug.
-        paddingBottom: 4,
-        paddingHorizontal: 10,
         ...fontScale.fontSmall
     },
 	searchResultText: {
@@ -52,13 +48,6 @@ const resultStyles = StyleSheet.create({
     }
 });
 
-const ResultHeader = ({gaelic, ipa}) => (
-    <View style={resultStyles.searchResultTextHeader}>
-        <Text style={resultStyles.searchResultGaelic}>{gaelic}</Text>
-        <Text style={resultStyles.searchResultIPA}>{ipa}</Text>
-    </View>
-);
-
 const Result = memo(
     ({gaelic, english, favourited, rowid, ipa, "user_created": isUserCreated, index}) => (
         <View style={
@@ -67,7 +56,10 @@ const Result = memo(
                 : resultStyles.searchResultContainerEven
             }>
             <View style={resultStyles.searchResultText}>
-                <ResultHeader gaelic={gaelic} ipa={ipa} />
+                <View style={resultStyles.searchResultTextHeader}>
+                    <Text style={resultStyles.searchResultGaelic}>{gaelic}</Text>
+                </View>
+                <Text style={resultStyles.searchResultIPA}>{ipa}</Text>
                 <Text style={resultStyles.searchResultEnglish}>{english}</Text>
             </View>
             <View style={resultStyles.favouriteButton}>
