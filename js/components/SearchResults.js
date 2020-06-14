@@ -98,7 +98,7 @@ const English = ({ english }) => {
 const IPA = ({ ipa }) => ipa ? <Text style={resultStyles.searchResultIPA}>{ipa}</Text> : null;
 
 const Result = memo(
-    ({gaelic, english, favourited, rowid, ipa, "user_created": isUserCreated, index}) => (
+    ({gaelic, english, favourited, id, ipa, "user_created": isUserCreated, index}) => (
         <View style={
                 index%2 
                 ? resultStyles.searchResultContainerOdd
@@ -112,8 +112,8 @@ const Result = memo(
             <View style={resultStyles.favouriteButton}>
                 {
                     isUserCreated
-                    ? <EditWordButton gaelic={gaelic} english={english} favourited={favourited} rowid={rowid} isUserCreated={isUserCreated} />
-                    : <FavouriteButton favourited={favourited} rowid={rowid} />
+                    ? <EditWordButton gaelic={gaelic} english={english} favourited={favourited} id={id} isUserCreated={isUserCreated} />
+                    : <FavouriteButton favourited={favourited} id={id} />
                 }
             </View>
         </View>
@@ -123,19 +123,19 @@ const Result = memo(
 const SearchResults = ({items}) => (
     <FlatList 
         data={items}
-        keyExtractor={item => "" + item.rowid}
+        keyExtractor={item => "" + item.id}
         renderItem={({item, index}) => <Result {...item} index={index} />}
         style={{backgroundColor: items.length%2 ? colours.background : '#ffffff'}}
     />
 );
 
-const FavouriteButton = ({favourited, rowid}) => {
+const FavouriteButton = ({favourited, id}) => {
     const dispatch = useDispatch();
 
     return (
         <IconButton 
             title="Favourite"
-            onPress={() => dispatch(toggleFavourite({rowid, favourited}))}
+            onPress={() => dispatch(toggleFavourite({id, favourited}))}
             source={
                 favourited 
                 ? require('../../res/star-solid.png')

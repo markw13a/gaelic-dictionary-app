@@ -22,7 +22,7 @@ const SearchTabBarIcon = ({color}) => (
 
 const SearchView = () => {
 	const dispatch = useDispatch();
-	const {searchTerm, searchResults} = useSelector(state => state.search);
+	const { searchTerm, searchResults } = useSelector(state => state.search);
 	return (
 		<>
 			<SearchBar searchTerm={searchTerm} />

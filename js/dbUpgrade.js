@@ -1,5 +1,5 @@
 const dbUpgrade = {
-	targetVersion: 2,
+	targetVersion: 0,
 	// Possible that user is more than one version behind. Assume that these statements need to be executed sequentially
 	upgradeStatements: {
 		// Use virtual fts5 to make matching text search quicker and easier

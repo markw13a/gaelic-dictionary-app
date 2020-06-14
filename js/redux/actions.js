@@ -58,11 +58,11 @@ const resetWordState = () => ({
 });
 
 const SET_ITEM = "SET_ITEM";
-const setItem = ({gaelic="", english="", rowid=null}) => ({
+const setItem = ({gaelic="", english="", id=null}) => ({
 	type: SET_ITEM,
 	gaelic,
 	english,
-	rowid
+	id
 });
 
 export {

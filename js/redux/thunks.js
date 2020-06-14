@@ -77,12 +77,14 @@ const refreshSearch = () => (dispatch, getState) => {
 	// Seems to work ok
 	db.executeSql(
 		"SELECT "+
-			"gaelic,english,favourited,rowid,user_created,ipa, 1 AS sortby, length(gaelic) "+
-		"FROM search "+
+			"gaelic,english,favourited,id,user_created,ipa,gaelic_no_accents, 1 AS sortby, length(gaelic) "+
+		"FROM faclair "+
 		"WHERE "+
-			"search.gaelic MATCH '"+searchTerm+"' "+
-			"OR search.gaelic_no_accents MATCH '"+searchTerm+"' "+
-			"OR search.english MATCH '"+searchTerm+"' "+
+			"faclair.gaelic LIKE '"+searchTerm+"%' "+
+			"OR faclair.gaelic_no_accents LIKE '"+searchTerm+"%' "+
+			// "OR faclair.gaelic_no_accents LIKE '%-"+searchTerm+"%' "+
+			// "OR faclair.gaelic_no_accents LIKE '% "+searchTerm+"%' "+
+			// "OR faclair.english LIKE '%"+searchTerm+"%' "+
 		"ORDER BY length(gaelic) ASC "+
 		"LIMIT 50;",
 	[])
@@ -108,7 +110,7 @@ const refreshSaved = () => (dispatch, getState) => {
 	const state = getState();
 	const db = state.db.db;
 
-	db.executeSql("SELECT gaelic, english, favourited, rowid, ipa, user_created FROM search WHERE favourited >= 1 ORDER BY CAST(favourited AS INTEGER) DESC;", [])
+	db.executeSql("SELECT gaelic, english, favourited, id, ipa, user_created FROM faclair WHERE favourited >= 1 ORDER BY CAST(favourited AS INTEGER) DESC;", [])
 	.then(queryResponse => {
 		const rows = queryResponse[0].rows;
 		const processedResults = [];
@@ -120,14 +122,14 @@ const refreshSaved = () => (dispatch, getState) => {
 	});
 };
 
-const toggleFavourite = ({rowid, favourited}) => (dispatch, getState) => {
+const toggleFavourite = ({id, favourited}) => (dispatch, getState) => {
 	const state = getState();
 	const db = state.db.db;
 
 	db.executeSql(
-		"UPDATE search " + 
+		"UPDATE faclair " + 
 		"SET favourited = " + (favourited === 0 ? new Date().getTime() : 0) + 
-		" WHERE rowid = " + rowid + ";", 
+		" WHERE id = " + id + ";", 
 		[]
 	)
 	.catch(err => console.error('An error has occured ' + JSON.stringify(err)));
@@ -165,15 +167,15 @@ const insertWord = ({gaelic, english}) => (dispatch, getState) => {
 	// Used later to allow the user to look up word without typing out correct accents
 	const gaelic_no_accents = gaelic.replace(/[áÁéÉíÍóÓúÚàèìòùÀÈÌÒÙ]/gi, (match) => CHARACTER_CONVERSION_TABLE[match]);
 
-	return db.executeSql(`INSERT INTO search (gaelic, gaelic_no_accents, english, favourited, user_created) VALUES ("${gaelic}", "${gaelic_no_accents}", "${english}", "${new Date().getTime()}", "1");`, []);
+	return db.executeSql(`INSERT INTO faclair (gaelic, gaelic_no_accents, english, favourited, user_created) VALUES ("${gaelic}", "${gaelic_no_accents}", "${english}", "${new Date().getTime()}", "1");`, []);
 };
-const deleteWord = rowid => (dispatch, getState) => {
+const deleteWord = id => (dispatch, getState) => {
 	const state = getState();
 	const db = state.db.db;
 
-	return db.executeSql(`DELETE FROM search WHERE rowid=${rowid} AND user_created = '1';`, []);
+	return db.executeSql(`DELETE FROM faclair WHERE id=${id} AND user_created = '1';`, []);
 };
-const saveWord = ({gaelic, english, rowid}) => (dispatch, getState) => {
+const saveWord = ({gaelic, english, id}) => (dispatch, getState) => {
 	if(!gaelic || !english) {
 		throw new Error(`saveWord undefined variable: gaelic: ${gaelic}, english: ${english}`);
 	}
@@ -181,7 +183,7 @@ const saveWord = ({gaelic, english, rowid}) => (dispatch, getState) => {
 	const db = state.db.db;
 
 	return (
-		dispatch(deleteWord(rowid))
+		dispatch(deleteWord(id))
 		.then(() => dispatch(insertWord({gaelic, english})))
 		.then(() => {
 			dispatch(refreshSearch(db));
@@ -189,8 +191,8 @@ const saveWord = ({gaelic, english, rowid}) => (dispatch, getState) => {
 		})
 	);
 };
-const deleteWordAndRefresh = rowid => (dispatch) => (
-	dispatch(deleteWord(rowid))
+const deleteWordAndRefresh = id => (dispatch) => (
+	dispatch(deleteWord(id))
 	.then(() => {
 		dispatch(refreshSearch());
 		dispatch(refreshSaved());

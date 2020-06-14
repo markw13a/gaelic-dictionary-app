@@ -11,7 +11,7 @@ import {TextInputWithCross, ThemedButton} from '../Common';
 const SaveButton = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
-	const {gaelic, english, rowid} = useSelector(state => state.word);
+	const {gaelic, english, id} = useSelector(state => state.word);
 
 	return (
 		<View style={styles.themedButton}>
@@ -22,7 +22,7 @@ const SaveButton = () => {
 						Alert.alert('Fields must not be blank');
 						return;
 					}
-					dispatch(saveWord({gaelic, english, rowid}))
+					dispatch(saveWord({gaelic, english, id}))
 					// .catch(err => Alert.alert(`Save failed: ${JSON.stringify(err)}`))
 					.then(() => {
 						dispatch(resetWordState());
@@ -52,17 +52,17 @@ const CancelButton = () => {
 const DeleteButton = () => {
 	const dispatch = useDispatch();
 	const navigation = useNavigation();
-	const rowid = useSelector(state => state.word.rowid);
+	const id = useSelector(state => state.word.id);
 
-	// No rowid indicates that we're creating a new word rather than editing an existing one
-	if(!rowid) return null;
+	// No id indicates that we're creating a new word rather than editing an existing one
+	if(!id) return null;
 
 	return (
 		<View style={styles.themedButton}>
 			<Button 
 				title="Delete" 
 				onPress={() => {
-					dispatch(deleteWordAndRefresh(rowid))
+					dispatch(deleteWordAndRefresh(id))
 					.then(() => {
 						dispatch(resetWordState());
 						navigation.goBack();

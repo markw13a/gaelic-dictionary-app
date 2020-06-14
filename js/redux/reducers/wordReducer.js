@@ -4,7 +4,7 @@ import { SET_WORD_KEY, SET_ITEM, RESET_WORD_STATE } from "../actions";
 const initialState = {
 	gaelic: "",
 	english: "",
-	rowid: null
+	id: null
 };
 const wordReducer = (state=initialState, action) => {
 	switch(action.type) {
@@ -18,7 +18,7 @@ const wordReducer = (state=initialState, action) => {
 			return produce(state, nextState => {
 				nextState.gaelic = action.gaelic;
 				nextState.english = action.english;
-				nextState.rowid = action.rowid;
+				nextState.id = action.id;
 			});
 		}
 		case RESET_WORD_STATE: {
