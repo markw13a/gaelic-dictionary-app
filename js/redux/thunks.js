@@ -1,3 +1,4 @@
+// TODO: break up actions, thunks files and replace with something more along the lines of the ducks pattern
 import SQLite from 'react-native-sqlite-storage';
 import dbUpgrade from '../dbUpgrade';
 import {
@@ -80,10 +81,19 @@ const refreshSearch = () => (dispatch, getState) => {
 			"gaelic,english,favourited,id,user_created,ipa,gaelic_no_accents, 1 AS sortby, length(gaelic) "+
 		"FROM faclair "+
 		"WHERE "+
-			"faclair.gaelic LIKE '"+searchTerm+"%' "+
-			"OR faclair.gaelic_no_accents LIKE '"+searchTerm+"%' "+
-			// "OR faclair.gaelic_no_accents LIKE '%-"+searchTerm+"%' "+
-			// "OR faclair.gaelic_no_accents LIKE '% "+searchTerm+"%' "+
+			"faclair.gaelic LIKE '"+searchTerm+"' "+
+			"OR faclair.gaelic LIKE '%-"+searchTerm+"' "+
+			"OR faclair.gaelic LIKE '% "+searchTerm+"' "+
+			"OR faclair.gaelic LIKE '"+searchTerm+"-%' "+
+			"OR faclair.gaelic LIKE '"+searchTerm+" %' "+
+			"OR faclair.gaelic LIKE ' "+searchTerm+" ' "+
+
+			"OR faclair.gaelic_no_accents LIKE '"+searchTerm+"' "+
+			"OR faclair.gaelic_no_accents LIKE '%-"+searchTerm+"' "+
+			"OR faclair.gaelic_no_accents LIKE '% "+searchTerm+"' "+
+			"OR faclair.gaelic_no_accents LIKE '"+searchTerm+"-%' "+
+			"OR faclair.gaelic_no_accents LIKE '"+searchTerm+" %' "+
+			"OR faclair.gaelic_no_accents LIKE ' "+searchTerm+" ' "+
 			// "OR faclair.english LIKE '%"+searchTerm+"%' "+
 		"ORDER BY length(gaelic) ASC "+
 		"LIMIT 50;",
