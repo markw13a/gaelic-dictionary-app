@@ -1,6 +1,6 @@
 import React from 'react';
-import {Button, Image, Text, TextInput, TouchableOpacity, View} from 'react-native';
-import styles, {colours, fontScale} from '../styles';
+import { Button, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import styles, { colours, fontScale } from '../styles';
 
 /**
  * Wraps image in a clickable area
@@ -27,12 +27,24 @@ const ThemedButton = props => (
 	/>
 );
 
+const ButtonGroup = ({ buttonLabels, selectedButtonLabel, onPress }) => (
+	<View style={styles.horizontalButtonGroup}>
+		{
+			buttonLabels.map( buttonLabel =>
+				<View style={{ flex: 1 }} key={buttonLabel}>
+					{
+						buttonLabel === selectedButtonLabel
+						? <Button title={buttonLabel} onPress={() => onPress(buttonLabel)} color={colours.interactablesDark}  />
+						: <Button title={buttonLabel} onPress={() => onPress(buttonLabel)} color={colours.interactables} /> 
+					}
+				</View>
+			)
+		}
+	</View>
+);
+
 const TextInputWithCross = ({value, onChange, onClear, label, ...props}) => (
-	<View style={{
-			flexDirection: 'column',
-			padding: 10
-		}}
-	>
+	<View>
 		{label && <Text style={{...fontScale.fontMedium}}>{label}</Text>}
 		<View style={{
 				flexDirection: 'row', 
@@ -59,5 +71,6 @@ const TextInputWithCross = ({value, onChange, onClear, label, ...props}) => (
 export {
 	IconButton,
 	TextInputWithCross,
-	ThemedButton
+	ThemedButton,
+	ButtonGroup
 };

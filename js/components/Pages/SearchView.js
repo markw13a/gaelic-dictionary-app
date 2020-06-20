@@ -1,13 +1,14 @@
 import React from 'react';
-import {useSelector, useDispatch} from "react-redux";
-import {Text, Image, View} from 'react-native';
+import { useSelector, useDispatch } from "react-redux";
+import { Text, Image, View } from 'react-native';
 
-import {fontScale, colours} from '../../styles';
+import { fontScale, colours } from '../../styles';
 import SearchResults from '../SearchResults';
-import {AddWordButton} from '../AddWord';
-import {TextInputWithCross} from '../Common';
-import {updateSearchAndRefresh} from "../../redux/thunks";
-import {setWordKey} from "../../redux/actions";
+import { AddWordButton } from '../AddWord';
+import { TextInputWithCross, ButtonGroup } from '../Common';
+import { updateSearchAndRefresh, refreshSearch } from "../../redux/thunks";
+import { setWordKey } from "../../redux/actions";
+import { SEARCH_TYPES, updateSearchType } from '../../redux/reducers/searchReducer';
 
 const SearchTabBarIcon = ({color}) => (
 	<Image
@@ -25,7 +26,7 @@ const SearchView = () => {
 	const { searchTerm, searchResults } = useSelector(state => state.search);
 	return (
 		<>
-			<SearchBar searchTerm={searchTerm} />
+			<SearchBar />
 			{
 				searchResults && searchResults.length === 0 && searchTerm
 				? (
@@ -42,16 +43,26 @@ const SearchView = () => {
 	);
 };
 
-const SearchBar = ({searchTerm}) => {
+const SearchBar = () => {
+	const { searchTerm, searchType } = useSelector(state => state.search);
 	const dispatch = useDispatch();
 
 	return (
-		<View style={{backgroundColor: '#055577', paddingVertical: '3%'}}>
+		<View style={{ backgroundColor: '#055577', padding: 15 }}>
 			<TextInputWithCross
 				onChange={text => dispatch(updateSearchAndRefresh(text))} 
 				onClear={() => dispatch(updateSearchAndRefresh(""))}
 				value={searchTerm} 
 				placeholder="Search..." 
+			/>
+			<ButtonGroup
+				buttonLabels={SEARCH_TYPES}
+				selectedButtonLabel={searchType}
+				onPress={selectedItem => {
+						dispatch(updateSearchType(selectedItem));
+						dispatch(refreshSearch());
+					}
+				}
 			/>
 		</View>
 	);

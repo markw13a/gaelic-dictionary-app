@@ -6,6 +6,7 @@ const colours = {
 	// Use different colours for buttons that control current view vs buttons that switch views
 	// Helps to emphasise that these are fundamentally different
 	interactables: '#2685AD',
+	interactablesDark: '#195771',
 	tabBarButtons: '#20BA96'
 };
 
@@ -42,6 +43,10 @@ const styles = StyleSheet.create({
 		backgroundColor: '#808080',
 		alignItems: "center",
 		justifyContent: "center"
+	},
+	horizontalButtonGroup: {
+		flexDirection: 'row',
+		alignItems: 'stretch'
 	},
 	verticalButtonGroup: {
 		flexDirection: 'column',

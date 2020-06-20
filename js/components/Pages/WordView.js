@@ -1,12 +1,12 @@
 import React from "react";
-import {useSelector, useDispatch} from "react-redux";
-import {Alert, Button, View} from 'react-native';
+import { useSelector, useDispatch } from "react-redux";
+import { Alert, Button, View } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 
-import {setWordKey, resetWordState} from "../../redux/actions";
-import {saveWord, deleteWordAndRefresh} from "../../redux/thunks";
-import styles, {colours} from '../../styles';
-import {TextInputWithCross, ThemedButton} from '../Common';
+import { setWordKey, resetWordState } from "../../redux/actions";
+import { saveWord, deleteWordAndRefresh } from "../../redux/thunks";
+import styles from '../../styles';
+import { TextInputWithCross, ThemedButton } from '../Common';
 
 const SaveButton = () => {
 	const dispatch = useDispatch();
@@ -78,7 +78,7 @@ const WordView = () => {
 	const dispatch = useDispatch();
 	const {gaelic, english} = useSelector(state => state.word);
 	return (
-		<View>
+		<View style={{ padding: 15 }}>
 			<View>
 				<TextInputWithCross 
 					onClear={() => dispatch(setWordKey({key: "gaelic", value: ""}))} 

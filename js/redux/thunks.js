@@ -9,6 +9,7 @@ import {
 	setDbFlag,
 	setWordKey
 } from "./actions";
+import { SEARCH_TYPES } from './reducers/searchReducer';
 SQLite.enablePromise(true);
 
 const DB_STATES = {
@@ -69,14 +70,14 @@ const closeDb = () => (dispatch, getState) => {
 
 const refreshSearch = () => (dispatch, getState) => {
 	const state = getState();
-	const searchTerm = state.search.searchTerm;
+	const { searchTerm, searchType } = state.search;
 	const db = state.db.db;
-	// TODO: ordering by length of gaelic is a bit dodgy.
-	// Will not give intended effect if user searches for something in English
-	// Sorting by length is a primitive way of ordering by "relevance"
-	// Guess that shortest result will be most similar to string provided
-	// Seems to work ok
-	db.executeSql(
+
+	if( !searchTerm ) {
+		return;
+	}
+
+	let query = (
 		"SELECT "+
 			"gaelic,english,favourited,id,user_created,ipa,gaelic_no_accents, 1 AS sortby, length(gaelic) "+
 		"FROM faclair "+
@@ -86,18 +87,35 @@ const refreshSearch = () => (dispatch, getState) => {
 			"OR faclair.gaelic LIKE '% "+searchTerm+"' "+
 			"OR faclair.gaelic LIKE '"+searchTerm+"-%' "+
 			"OR faclair.gaelic LIKE '"+searchTerm+" %' "+
-			"OR faclair.gaelic LIKE ' "+searchTerm+" ' "+
+			"OR faclair.gaelic LIKE '% "+searchTerm+" %' "+
 
 			"OR faclair.gaelic_no_accents LIKE '"+searchTerm+"' "+
 			"OR faclair.gaelic_no_accents LIKE '%-"+searchTerm+"' "+
 			"OR faclair.gaelic_no_accents LIKE '% "+searchTerm+"' "+
 			"OR faclair.gaelic_no_accents LIKE '"+searchTerm+"-%' "+
 			"OR faclair.gaelic_no_accents LIKE '"+searchTerm+" %' "+
-			"OR faclair.gaelic_no_accents LIKE ' "+searchTerm+" ' "+
-			// "OR faclair.english LIKE '%"+searchTerm+"%' "+
+			"OR faclair.gaelic_no_accents LIKE '% "+searchTerm+" %' "+
 		"ORDER BY length(gaelic) ASC "+
-		"LIMIT 50;",
-	[])
+		"LIMIT 50;"
+	);
+
+	// Searching English to Gaelic
+	if( searchType === SEARCH_TYPES[1] ) {
+		query = (
+			"SELECT "+
+			"gaelic,english,favourited,id,user_created,ipa,gaelic_no_accents, 1 AS sortby, length(gaelic) "+
+			"FROM faclair "+
+			"WHERE "+
+				"faclair.english LIKE '"+searchTerm+"' "+
+				"OR faclair.english LIKE '% "+searchTerm+"' "+
+				"OR faclair.english LIKE '"+searchTerm+" %' "+
+				"OR faclair.english LIKE '% "+searchTerm+" %' "+
+			"ORDER BY length(gaelic) ASC "+
+			"LIMIT 50;"
+		);
+	}
+
+	db.executeSql(query,[])
 	.catch(err => console.warn(JSON.stringify(err)))
 	.then(queryResponse => {
 		const rows = queryResponse[0].rows;
@@ -215,6 +233,7 @@ export {
 	initialiseDb,
 	closeDb,
 	refreshSaved,
+	refreshSearch,
 	saveWord,
 	deleteWord,
 	deleteWordAndRefresh,
