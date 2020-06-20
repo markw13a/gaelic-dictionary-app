@@ -31,7 +31,7 @@ const doUpgradeDb = db => (
 		const version = Object.values(res[0].rows.item(0))[0];
 		if( version == dbUpgrade.targetVersion ) return;
 		const upgradeVersion = version + 1;
-			
+		
 		// Apply version upgrades one at a time (e.g upgrade 1 -> 3 in steps of 1 -> 2 and then 2 -> 3)
 		// Call function recursively if user is multiple updates behind targetVersion
 		return (
@@ -53,7 +53,6 @@ const upgradeDb = () => (dispatch, getState) => {
 
 const initialiseDb = () => dispatch => {
 	dispatch(fetchDb())
-	.then(() => dispatch(upgradeDb()))
 	.then(() => dispatch(setDbFlag(DB_STATES.READY)));
 };
 
