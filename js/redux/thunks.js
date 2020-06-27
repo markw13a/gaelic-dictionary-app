@@ -78,22 +78,11 @@ const refreshSearch = () => (dispatch, getState) => {
 
 	let query = (
 		"SELECT "+
-			"gaelic,english,favourited,id,user_created,ipa,gaelic_no_accents, 1 AS sortby, length(gaelic) "+
+			"gaelic,english,favourited,id,user_created,ipa,gaelic_no_accents, 1 AS sortby "+
 		"FROM faclair "+
 		"WHERE "+
-			"faclair.gaelic LIKE '"+searchTerm+"' "+
-			"OR faclair.gaelic LIKE '%-"+searchTerm+"' "+
-			"OR faclair.gaelic LIKE '% "+searchTerm+"' "+
-			"OR faclair.gaelic LIKE '"+searchTerm+"-%' "+
-			"OR faclair.gaelic LIKE '"+searchTerm+" %' "+
-			"OR faclair.gaelic LIKE '% "+searchTerm+" %' "+
-
-			"OR faclair.gaelic_no_accents LIKE '"+searchTerm+"' "+
-			"OR faclair.gaelic_no_accents LIKE '%-"+searchTerm+"' "+
-			"OR faclair.gaelic_no_accents LIKE '% "+searchTerm+"' "+
+			"faclair.gaelic_no_accents = '"+searchTerm+"' "+
 			"OR faclair.gaelic_no_accents LIKE '"+searchTerm+"-%' "+
-			"OR faclair.gaelic_no_accents LIKE '"+searchTerm+" %' "+
-			"OR faclair.gaelic_no_accents LIKE '% "+searchTerm+" %' "+
 		"ORDER BY length(gaelic) ASC "+
 		"LIMIT 50;"
 	);
@@ -102,12 +91,12 @@ const refreshSearch = () => (dispatch, getState) => {
 	if( searchType === SEARCH_TYPES[1] ) {
 		query = (
 			"SELECT "+
-			"gaelic,english,favourited,id,user_created,ipa,gaelic_no_accents, 1 AS sortby, length(gaelic) "+
+			"gaelic,english,favourited,id,user_created,ipa,gaelic_no_accents "+
 			"FROM faclair "+
 			"WHERE "+
-				"faclair.english LIKE '"+searchTerm+"' "+
-				"OR faclair.english LIKE '% "+searchTerm+"' "+
+				"faclair.english = '"+searchTerm+"' "+
 				"OR faclair.english LIKE '"+searchTerm+" %' "+
+				"OR faclair.english LIKE '% "+searchTerm+"' "+
 				"OR faclair.english LIKE '% "+searchTerm+" %' "+
 			"ORDER BY length(gaelic) ASC "+
 			"LIMIT 50;"
