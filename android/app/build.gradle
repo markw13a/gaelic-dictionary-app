@@ -127,8 +127,8 @@ android {
         applicationId "com.faclairNaGaidhlig"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 16
-        versionName "4.0.1"
+        versionCode 18
+        versionName "4.0.3"
     }
     signingConfigs {
         release {

@@ -81,7 +81,7 @@ const refreshSearch = () => (dispatch, getState) => {
 			"gaelic,english,favourited,id,user_created,ipa,gaelic_no_accents, 1 AS sortby "+
 		"FROM faclair "+
 		"WHERE "+
-			"faclair.gaelic_no_accents = '"+searchTerm+"' "+
+			"faclair.gaelic_no_accents LIKE '"+searchTerm+"' "+
 			"OR faclair.gaelic_no_accents LIKE '"+searchTerm+"-%' "+
 		"ORDER BY length(gaelic) ASC "+
 		"LIMIT 50;"
@@ -94,7 +94,7 @@ const refreshSearch = () => (dispatch, getState) => {
 			"gaelic,english,favourited,id,user_created,ipa,gaelic_no_accents "+
 			"FROM faclair "+
 			"WHERE "+
-				"faclair.english = '"+searchTerm+"' "+
+				"faclair.english LIKE '"+searchTerm+"' "+
 				"OR faclair.english LIKE '"+searchTerm+" %' "+
 				"OR faclair.english LIKE '% "+searchTerm+"' "+
 				"OR faclair.english LIKE '% "+searchTerm+" %' "+
