@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
+    "android": "sudo cp /media/mark/DATA/avd/Pixel_2_API_28.ini /home/mark/.android/avd/Pixel_2_API_28.ini && react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
