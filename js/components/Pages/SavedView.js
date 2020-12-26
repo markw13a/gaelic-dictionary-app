@@ -7,7 +7,9 @@ import SearchResults from "../SearchResults";
 import {AddWordButton} from "../AddWord";
 import {refreshSaved} from "../../redux/thunks";
 
-const SavedTabBarIcon = ({color}) => (
+export const SAVED_ROUTE  = "Saved";
+
+export const SavedTabBarIcon = ({color}) => (
 	<Image
 		source={require('../../../res/save.png')}
 		style={{
@@ -21,7 +23,7 @@ const SavedTabBarIcon = ({color}) => (
 /**
  * Displays all words favourited or created by the user
  */
-const SavedView = () => {
+export const SavedView = () => {
 	const savedItems = useSelector(state => state.saved.savedItems);
 	const dispatch = useDispatch();
 
@@ -42,8 +44,3 @@ const SavedView = () => {
 		</>
 	);
 };
-
-export {
-	SavedView,
-	SavedTabBarIcon
-}

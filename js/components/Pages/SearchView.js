@@ -10,7 +10,9 @@ import { updateSearchAndRefresh, refreshSearch } from "../../redux/thunks";
 import { setWordKey } from "../../redux/actions";
 import { SEARCH_TYPES, updateSearchType } from '../../redux/reducers/searchReducer';
 
-const SearchTabBarIcon = ({color}) => (
+export const SEARCH_ROUTE = "Search";
+
+export const SearchTabBarIcon = ({color}) => (
 	<Image
 		source={require('../../../res/search.png')}
 		style={{
@@ -21,7 +23,7 @@ const SearchTabBarIcon = ({color}) => (
 	/>
 );
 
-const SearchView = () => {
+export const SearchView = () => {
 	const dispatch = useDispatch();
 	const { searchTerm, searchResults } = useSelector(state => state.search);
 	return (
@@ -67,8 +69,3 @@ const SearchBar = () => {
 		</View>
 	);
 };
-
-export {
-	SearchView,
-	SearchTabBarIcon
-}

@@ -4,15 +4,15 @@ import {Provider, useDispatch, useSelector} from "react-redux";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs"
 import {NavigationContainer} from "@react-navigation/native";
 
-import {SavedView, SavedTabBarIcon} from './js/components/Pages/SavedView';
-import {SearchView, SearchTabBarIcon} from './js/components/Pages/SearchView';
+import {SavedView, SavedTabBarIcon, SAVED_ROUTE} from './js/components/Pages/SavedView';
+import {SearchView, SearchTabBarIcon, SEARCH_ROUTE} from './js/components/Pages/SearchView';
 import WordView from './js/components/Pages/WordView';
 import store from "./js/redux/store";
 
-import PAGE_NAMES from "./js/components/Pages/PAGE_NAMES";
 import { colours } from './js/styles';
 import { initialiseDb, closeDb, DB_STATES } from './js/redux/thunks';
 import LoadingView from './js/components/Pages/LoadingView';
+import { ADD_WORD_ROUTE } from './js/components/AddWord';
 
 const Tab = createBottomTabNavigator();
 
@@ -37,28 +37,28 @@ const Main = () => (
 		<DatabaseSetUpAndTearDown>
 			<NavigationContainer>
 				<Tab.Navigator 
-					initialRouteName={PAGE_NAMES.SEARCH} 
+					initialRouteName={SEARCH_ROUTE} 
 					tabBarOptions={{
 						activeTintColor: colours.tabBarButtons,
 						showIcon: true
 					}}
 				>
 					<Tab.Screen 
-						name={PAGE_NAMES.SEARCH} 
+						name={SEARCH_ROUTE} 
 						component={SearchView}
 						options={{
 							tabBarIcon: SearchTabBarIcon
 						}} 
 					/>
 					<Tab.Screen 
-						name={PAGE_NAMES.SAVED}
+						name={SAVED_ROUTE}
 						component={SavedView}
 						options={{
 							tabBarIcon: SavedTabBarIcon
 						}} 
 					/>
 					<Tab.Screen 
-						name={PAGE_NAMES.ADD_WORD}
+						name={ADD_WORD_ROUTE}
 						component={WordView}
 						options={{
 							// Don't want this screen to be reachable via the tab bar

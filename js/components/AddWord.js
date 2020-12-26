@@ -6,9 +6,10 @@ import { useNavigation } from '@react-navigation/native';
 import {setItem} from "../redux/actions";
 import styles, { colours } from '../styles';
 import {ThemedButton, IconButton} from './Common';
-import PAGE_NAMES from './Pages/PAGE_NAMES';
 
-const AddWordButton = ({onPress}) => {
+export const ADD_WORD_ROUTE = "AddWord";
+
+export const AddWordButton = ({onPress}) => {
 	const navigation = useNavigation();
 	
 	return (
@@ -17,7 +18,7 @@ const AddWordButton = ({onPress}) => {
 				<ThemedButton 
 					title="Add new word"
 					onPress={() => {
-						navigation.navigate(PAGE_NAMES.ADD_WORD);
+						navigation.navigate(ADD_WORD_ROUTE);
 						onPress && onPress();
 					}}
 				/>
@@ -26,7 +27,7 @@ const AddWordButton = ({onPress}) => {
 	);
 }
 
-const EditWordButton = item => {
+export const EditWordButton = item => {
 	const dispatch = useDispatch(); 
 	const navigation = useNavigation();
 
@@ -35,14 +36,9 @@ const EditWordButton = item => {
 			title="Edit"
 			onPress={() => {
 				dispatch(setItem(item));
-				navigation.navigate(PAGE_NAMES.ADD_WORD);
+				navigation.navigate(ADD_WORD_ROUTE);
 			}}
 			source={require('../../res/edit.png')}
 		/>
 	);
-}
-
-export {
-	AddWordButton,
-	EditWordButton
 };
