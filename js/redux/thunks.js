@@ -1,6 +1,5 @@
 // TODO: break up actions, thunks files and replace with something more along the lines of the ducks pattern
 import SQLite from 'react-native-sqlite-storage';
-import dbUpgrade from '../dbUpgrade';
 import {
 	updateSearch, 
 	updateSearchResults,
