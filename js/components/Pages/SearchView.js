@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { Text, Image, View } from 'react-native';
 
@@ -9,6 +9,7 @@ import { TextInputWithCross, ButtonGroup } from '../Common';
 import { updateSearchAndRefresh, refreshSearch } from "../../redux/thunks";
 import { setWordKey } from "../../redux/actions";
 import { SEARCH_TYPES, updateSearchType } from '../../redux/reducers/searchReducer';
+import { logAnalyticsEvent } from '../../analytics';
 
 export const SEARCH_ROUTE = "Search";
 
@@ -48,6 +49,15 @@ export const SearchView = () => {
 const SearchBar = () => {
 	const { searchTerm, searchType } = useSelector(state => state.search);
 	const dispatch = useDispatch();
+
+	useEffect(() => {
+		const timeout = setTimeout(() => {
+			const dataToLog = { searchTerm, searchType };
+			logAnalyticsEvent("searched", dataToLog);
+		}, 500);
+
+		return () => clearTimeout(timeout);
+	}, [searchTerm, searchType]);
 
 	return (
 		<View style={{ backgroundColor: '#055577', padding: 15 }}>

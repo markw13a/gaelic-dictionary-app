@@ -6,6 +6,7 @@ import { fontScale, colours } from '../styles';
 import { EditWordButton } from './AddWord';
 import { IconButton } from './Common';
 import { toggleFavourite } from '../redux/thunks';
+import { logAnalyticsEvent } from '../analytics';
 
 const resultStyles = StyleSheet.create({
     searchResultContainerOdd: {
@@ -135,7 +136,10 @@ const FavouriteButton = ({favourited, id}) => {
     return (
         <IconButton 
             title="Favourite"
-            onPress={() => dispatch(toggleFavourite({id, favourited}))}
+            onPress={() => {
+                logAnalyticsEvent('favourite_clicked');
+                dispatch(toggleFavourite({id, favourited}));
+            }}
             source={
                 favourited 
                 ? require('../../res/star-solid.png')

@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {useSelector, useDispatch} from "react-redux";
 import {Image, View, Text} from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
@@ -6,6 +6,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import SearchResults from "../SearchResults";
 import {AddWordButton} from "../AddWord";
 import {refreshSaved} from "../../redux/thunks";
+import { logAnalyticsEvent } from '../../analytics';
 
 export const SAVED_ROUTE  = "Saved";
 
@@ -27,6 +28,10 @@ export const SavedView = () => {
 	const savedItems = useSelector(state => state.saved.savedItems);
 	const dispatch = useDispatch();
 
+	useEffect(() => {
+		logAnalyticsEvent('viewed_saved');
+	}, []);
+		
 	useFocusEffect(
 		useCallback(() => {
 			dispatch(refreshSaved())
