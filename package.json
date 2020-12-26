@@ -8,10 +8,13 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "bundleRelease": "cd ./android && sudo ./gradlew bundleRelease"
+    "bundleRelease": "cd ./android && sudo ./gradlew bundleRelease",
+    "beta:android": "cd ./android && sudo fastlane beta"
   },
   "dependencies": {
     "@react-native-community/masked-view": "^0.1.7",
+    "@react-native-firebase/analytics": "^10.3.0",
+    "@react-native-firebase/app": "^10.3.0",
     "@react-navigation/bottom-tabs": "^5.2.2",
     "@react-navigation/native": "^5.1.1",
     "@react-navigation/stack": "^5.2.3",
@@ -31,13 +34,14 @@
     "@babel/core": "^7.8.4",
     "@babel/runtime": "^7.8.4",
     "@react-native-community/eslint-config": "^1.1.0",
-    "babel-jest": "^25.1.0",
+    "babel-jest": "^25.5.1",
     "eslint": "^6.5.1",
     "jest": "^25.1.0",
     "metro-react-native-babel-preset": "^0.59.0",
     "react-test-renderer": "16.13.1"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "setupFiles": ["./node_modules/react-native-gesture-handler/jestSetup.js"]
   }
 }

@@ -9,6 +9,13 @@ import App from '../App';
 // Note: test renderer must be required after react-native.
 import renderer from 'react-test-renderer';
 
-it('renders correctly', () => {
-  renderer.create(<App />);
+jest.mock('@react-native-firebase/analytics', () => {
+  return () => ({
+    logEvent: jest.fn(),
+    setUserProperties: jest.fn(),
+    setUserId: jest.fn(),
+    setCurrentScreen: jest.fn(),
+  })
 });
+
+it('renders correctly', async () => {});

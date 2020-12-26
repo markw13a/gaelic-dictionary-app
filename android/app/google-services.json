@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "350036842935",
+    "project_id": "faclairnagaidhlig",
+    "storage_bucket": "faclairnagaidhlig.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:350036842935:android:6a5262664ff8abc89d3032",
+        "android_client_info": {
+          "package_name": "com.faclairNaGaidhlig"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "350036842935-uctqqekn8bd4j7ifubsv02h31ml0dvo2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsE-_wP66J4hswIjxhuMnzXTXf1DI3al8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "350036842935-uctqqekn8bd4j7ifubsv02h31ml0dvo2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

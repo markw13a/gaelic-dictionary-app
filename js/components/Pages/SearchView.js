@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { Text, Image, View } from 'react-native';
 
@@ -9,8 +9,11 @@ import { TextInputWithCross, ButtonGroup } from '../Common';
 import { updateSearchAndRefresh, refreshSearch } from "../../redux/thunks";
 import { setWordKey } from "../../redux/actions";
 import { SEARCH_TYPES, updateSearchType } from '../../redux/reducers/searchReducer';
+import { logAnalyticsEvent } from '../../analytics';
 
-const SearchTabBarIcon = ({color}) => (
+export const SEARCH_ROUTE = "Search";
+
+export const SearchTabBarIcon = ({color}) => (
 	<Image
 		source={require('../../../res/search.png')}
 		style={{
@@ -21,7 +24,7 @@ const SearchTabBarIcon = ({color}) => (
 	/>
 );
 
-const SearchView = () => {
+export const SearchView = () => {
 	const dispatch = useDispatch();
 	const { searchTerm, searchResults } = useSelector(state => state.search);
 	return (
@@ -47,6 +50,15 @@ const SearchBar = () => {
 	const { searchTerm, searchType } = useSelector(state => state.search);
 	const dispatch = useDispatch();
 
+	useEffect(() => {
+		const timeout = setTimeout(() => {
+			const dataToLog = { searchTerm, searchType };
+			logAnalyticsEvent("searched", dataToLog);
+		}, 500);
+
+		return () => clearTimeout(timeout);
+	}, [searchTerm, searchType]);
+
 	return (
 		<View style={{ backgroundColor: '#055577', padding: 15 }}>
 			<TextInputWithCross
@@ -67,8 +79,3 @@ const SearchBar = () => {
 		</View>
 	);
 };
-
-export {
-	SearchView,
-	SearchTabBarIcon
-}

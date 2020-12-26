@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {useSelector, useDispatch} from "react-redux";
 import {Image, View, Text} from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
@@ -6,8 +6,11 @@ import { useFocusEffect } from '@react-navigation/native';
 import SearchResults from "../SearchResults";
 import {AddWordButton} from "../AddWord";
 import {refreshSaved} from "../../redux/thunks";
+import { logAnalyticsEvent } from '../../analytics';
 
-const SavedTabBarIcon = ({color}) => (
+export const SAVED_ROUTE  = "Saved";
+
+export const SavedTabBarIcon = ({color}) => (
 	<Image
 		source={require('../../../res/save.png')}
 		style={{
@@ -21,10 +24,14 @@ const SavedTabBarIcon = ({color}) => (
 /**
  * Displays all words favourited or created by the user
  */
-const SavedView = () => {
+export const SavedView = () => {
 	const savedItems = useSelector(state => state.saved.savedItems);
 	const dispatch = useDispatch();
 
+	useEffect(() => {
+		logAnalyticsEvent('viewed_saved');
+	}, []);
+		
 	useFocusEffect(
 		useCallback(() => {
 			dispatch(refreshSaved())
@@ -42,8 +49,3 @@ const SavedView = () => {
 		</>
 	);
 };
-
-export {
-	SavedView,
-	SavedTabBarIcon
-}
