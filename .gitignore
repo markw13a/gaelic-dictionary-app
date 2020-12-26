@@ -60,3 +60,4 @@ buck-out/
 
 my-upload-key.keystore
 scrape
+google-play.json
