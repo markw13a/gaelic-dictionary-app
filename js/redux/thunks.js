@@ -18,37 +18,13 @@ const DB_STATES = {
 	READY: "READY",
 	CLOSED: "CLOSED"
 };
+
 const fetchDb = () => dispatch => {
 	dispatch(setDbFlag(DB_STATES.LOADING));
 	return (
 		SQLite.openDatabase({name: 'test.db', createFromLocation: '~faclair-ur.db'})
 		.then(db => dispatch(setDb(db)))
 	);
-};
-const doUpgradeDb = db => (
-	db.executeSql("SELECT MAX(version) FROM Version;", [])
-	.then(res => {
-		const version = Object.values(res[0].rows.item(0))[0];
-		if( version == dbUpgrade.targetVersion ) return;
-		const upgradeVersion = version + 1;
-		
-		// Apply version upgrades one at a time (e.g upgrade 1 -> 3 in steps of 1 -> 2 and then 2 -> 3)
-		// Call function recursively if user is multiple updates behind targetVersion
-		return (
-			db.sqlBatch([
-				...dbUpgrade.upgradeStatements[`to_v${upgradeVersion}`],
-				`INSERT INTO Version (version) VALUES (${upgradeVersion});`            
-			]).then(() => doUpgradeDb(db))
-		);
-	})
-);
-
-const upgradeDb = () => (dispatch, getState) => {
-	const state = getState();
-	const db = state.db.db;
-	
-	dispatch(setDbFlag(DB_STATES.UPDATING));
-	return doUpgradeDb(db);
 };
 
 const initialiseDb = () => dispatch => {
