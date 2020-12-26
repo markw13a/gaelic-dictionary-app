@@ -8,7 +8,8 @@
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "bundleRelease": "cd ./android && sudo ./gradlew bundleRelease"
+    "bundleRelease": "cd ./android && sudo ./gradlew bundleRelease",
+    "beta:android": "cd ./android && sudo fastlane beta"
   },
   "dependencies": {
     "@react-native-community/masked-view": "^0.1.7",
@@ -33,7 +34,7 @@
     "@babel/core": "^7.8.4",
     "@babel/runtime": "^7.8.4",
     "@react-native-community/eslint-config": "^1.1.0",
-    "babel-jest": "^25.1.0",
+    "babel-jest": "^25.5.1",
     "eslint": "^6.5.1",
     "jest": "^25.1.0",
     "metro-react-native-babel-preset": "^0.59.0",
