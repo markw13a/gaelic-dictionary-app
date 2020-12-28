@@ -5,11 +5,11 @@
   "scripts": {
     "android": "sudo cp /media/mark/DATA/avd/Pixel_2_API_28.ini /home/mark/.android/avd/Pixel_2_API_28.ini && react-native run-android",
     "ios": "react-native run-ios",
-    "start": "react-native start",
-    "test": "jest",
     "lint": "eslint .",
-    "bundleRelease": "cd ./android && sudo ./gradlew bundleRelease",
-    "beta:android": "cd ./android && sudo fastlane beta"
+    "start": "react-native start",
+    "test": "detox test -c android.emu.release",
+    "test:build": "detox build -c android.emu.release",
+    "release:beta:android": "cd ./android && sudo fastlane beta"
   },
   "dependencies": {
     "@react-native-community/masked-view": "^0.1.7",
@@ -35,13 +35,17 @@
     "@babel/runtime": "^7.8.4",
     "@react-native-community/eslint-config": "^1.1.0",
     "babel-jest": "^25.5.1",
+    "detox": "^17.14.8",
     "eslint": "^6.5.1",
     "jest": "^25.1.0",
+    "jest-circus": "^26.6.3",
     "metro-react-native-babel-preset": "^0.59.0",
     "react-test-renderer": "16.13.1"
   },
   "jest": {
     "preset": "react-native",
-    "setupFiles": ["./node_modules/react-native-gesture-handler/jestSetup.js"]
+    "setupFiles": [
+      "./node_modules/react-native-gesture-handler/jestSetup.js"
+    ]
   }
 }
